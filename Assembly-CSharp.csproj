@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Enemy\EnemyHealth.cs" />
     <Compile Include="Assets\Scripts\Environment\DoorTransition.cs" />
     <Compile Include="Assets\Scripts\Systems\PlayerHUD.cs" />
+    <Compile Include="Assets\Scripts\Systems\Checkpoints.cs" />
     <Compile Include="Assets\Scripts\Systems\GameManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Systems\CameraFollow.cs" />

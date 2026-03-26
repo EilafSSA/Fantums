@@ -1,5 +1,5 @@
 using UnityEngine;
-
+// btw im really sorry if the code isnt as clean, im trying to make it clean so anyone can really read it, trying to optimize it so like u get a general understanding on the whole thing and I guess i just like taking notes but feel free to remove them or add on them cause i check after like i push a github :D
 public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] private int maxHealth = 3;

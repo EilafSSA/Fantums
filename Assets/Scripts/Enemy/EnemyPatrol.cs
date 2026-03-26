@@ -1,5 +1,5 @@
 using UnityEngine;
-
+// actually this is the one for the patrol system to make the bullets walk along the X axis between two points its good for that but again the bullets still get knocked all around but its a good pathing system we can put a respawn point the one we made for the player and maybe once the bullet reaches that point it does the trigger and dissapers -> reappers from where the bullet was shot.
 public class EnemyPatrol : MonoBehaviour
 {
     [Header("=== Patrol Points ===")]
@@ -35,7 +35,6 @@ public class EnemyPatrol : MonoBehaviour
         currentTarget = pointB;
         FaceTarget();
     }
-
     private void FixedUpdate()
     {
         if (waiting)

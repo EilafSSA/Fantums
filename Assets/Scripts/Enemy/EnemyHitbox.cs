@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+// probably really good to also incldue this in projectiles I think, just need to fix the projectiles so they do not collide with the player since right now the player can literally move the bullet and since the bullet needs a one second timer in the hit box to damage the player maybe we can just take functions from this then cause for sure 1 second makes no sense for a bullet, must be instnat but refrence for future codie.
 public class EnemyHitbox : MonoBehaviour
 {
     [SerializeField] private int contactDamage = 1;
@@ -16,7 +16,6 @@ public class EnemyHitbox : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log($"[EnemyHitbox] ENTER detected: {other.gameObject.name} | Tag: {other.tag} | Layer: {LayerMask.LayerToName(other.gameObject.layer)}");
         TryDamagePlayer(other);
     }
 
@@ -27,10 +26,17 @@ public class EnemyHitbox : MonoBehaviour
 
     private void TryDamagePlayer(Collider2D other)
     {
-        if (!other.CompareTag("Player")) return;
+       
+        GameObject root = other.transform.root.gameObject;
+        bool isPlayer = other.CompareTag("Player") || root.CompareTag("Player");
+        if (!isPlayer) return;
+
         if (cooldownTimer > 0f) return;
 
+        
         PlayerHealth hp = other.GetComponent<PlayerHealth>();
+        if (hp == null) hp = other.GetComponentInParent<PlayerHealth>();
+
         if (hp != null)
         {
             hp.TakeDamage(contactDamage);
@@ -38,16 +44,20 @@ public class EnemyHitbox : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[EnemyHitbox] Player has no PlayerHealth component!");
+            Debug.LogWarning("[EnemyHitbox] Could not find PlayerHealth on player hierarchy!");
+            return;
         }
 
+        // nockback
         Rigidbody2D playerRB = other.GetComponent<Rigidbody2D>();
+        if (playerRB == null) playerRB = other.GetComponentInParent<Rigidbody2D>();
+
         if (playerRB != null)
         {
-            Vector2 knockDir = (other.transform.position - transform.parent.position).normalized;
+            Vector2 knockDir = (root.transform.position - transform.parent.position).normalized;
             knockDir.y = 0.5f;
             playerRB.linearVelocity = Vector2.zero;
-            playerRB.AddForce(knockDir * knockbackForce, ForceMode2D.Impulse);
+            playerRB.AddForce(knockDir.normalized * knockbackForce, ForceMode2D.Impulse);
         }
 
         cooldownTimer = damageCooldown;
