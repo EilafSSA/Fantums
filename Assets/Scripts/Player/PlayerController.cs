@@ -25,12 +25,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float attackCooldown = 0.4f;
     [SerializeField] private LayerMask enemyLayer;
 
+    private Animator anim; //addedbyEilaf
     private Rigidbody2D rb;
     private float moveInput;
     private bool isGrounded;
     private bool isClinging;
     private bool facingRight = true;
     private float attackTimer;
+    
 
     private void Awake()
     {
@@ -39,6 +41,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        anim = GetComponent<Animator>(); //addedbyEilaf
+
         moveInput = Input.GetAxisRaw("Horizontal");
 
         isGrounded = Physics2D.OverlapBox(
@@ -47,6 +51,13 @@ public class PlayerController : MonoBehaviour
             0f,
             groundLayer
         );
+
+        if (isGrounded)
+            {
+             anim.SetBool("IsGrounded", true);
+             anim.SetBool("IsClinging", false);
+            } //addedbyEilaf
+            else {anim.SetBool("IsGrounded", false); anim.SetBool("IsClinging", false);} //addedbyEilaf
 
         bool clingContact = Physics2D.OverlapCircle(grabCheck.position, grabCheckRadius, clingLayer);
 
@@ -81,8 +92,12 @@ public class PlayerController : MonoBehaviour
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                anim.SetTrigger("Jump"); //addedbyEilaf
             }
         }
+
+        if (isClinging){ anim.SetBool("IsClinging", true);} //addedbyEilaf
+            else {anim.SetBool("IsClinging", false);} //addedbyEilaf
 
         attackTimer -= Time.deltaTime;
         if (Input.GetMouseButtonDown(0) && attackTimer <= 0f)
@@ -104,11 +119,16 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = Vector2.zero;
             rb.gravityScale = 0f;
+            anim.SetBool("IsClinging", true); //addedbyEilaf
+            anim.SetBool("IsRunning", false); //addedbyEilaf
         }
         else
         {
             rb.gravityScale = 3f;
             rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+            anim.SetBool("IsRunning", true); //addedbyEilaf
+            anim.SetBool("IsClinging", false); //addedbyEilaf
+            
         }
     }
 
@@ -116,6 +136,7 @@ public class PlayerController : MonoBehaviour
     {
         isClinging = false;
         rb.gravityScale = 3f;
+        anim.SetBool("IsClinging", false); //addedbyEilaf
     }
 
     private void Attack()
@@ -160,3 +181,4 @@ public class PlayerController : MonoBehaviour
         }
     }
 }
+

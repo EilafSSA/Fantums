@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float invincibilityTime = 1.5f;
     [SerializeField] private float respawnDelay = 0.5f;
 
+    private Animator anim; //addedbyEilaf
     private int currentHealth;
     private bool isInvincible;
     private float invincibilityTimer;

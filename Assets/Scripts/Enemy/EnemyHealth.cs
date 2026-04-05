@@ -4,16 +4,23 @@ public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] private int maxHealth = 3;
     private int currentHealth;
+    private Animator anim; //addedbyEilaf
 
     private void Awake()
     {
         currentHealth = maxHealth;
     }
 
+    private void Update() //addedbyEilaf
+    {
+        anim = GetComponent<Animator>(); //addedbyEilaf
+    }
+
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
         Debug.Log($"Enemy HP: {currentHealth}/{maxHealth}");
+        anim.SetTrigger("IsHurt"); //addedbyEilaf
 
         
         StartCoroutine(FlashDamage());

@@ -11,6 +11,7 @@ public class EnemyPatrol : MonoBehaviour
     [SerializeField] private float arrivalThreshold = 0.3f;
     [SerializeField] private float waitTime = 0f;
 
+    private Animator anim; //addedbyEilaf
     private Transform currentTarget;
     private Rigidbody2D rb;
     private float waitTimer;
@@ -35,10 +36,16 @@ public class EnemyPatrol : MonoBehaviour
         currentTarget = pointB;
         FaceTarget();
     }
+    private void Update() //addedbyEilaf
+    {
+        anim = GetComponent<Animator>(); //addedbyEilaf
+    }
+
     private void FixedUpdate()
     {
         if (waiting)
         {
+            anim.SetBool("IsMoving", false); //addedbyEilaf
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             waitTimer -= Time.fixedDeltaTime;
             if (waitTimer <= 0f)
@@ -56,9 +63,11 @@ public class EnemyPatrol : MonoBehaviour
         {
             currentTarget = (currentTarget == pointA) ? pointB : pointA;
             FaceTarget();
+            anim.SetBool("IsMoving", true); //addedbyEilaf
 
             if (waitTime > 0f)
             {
+                anim.SetBool("IsMoving", false); //addedbyEilaf
                 waiting = true;
                 waitTimer = waitTime;
             }
