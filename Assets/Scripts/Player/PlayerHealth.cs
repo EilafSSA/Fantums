@@ -27,12 +27,13 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
+        anim = GetComponent<Animator>(); //addedbyEilaf
+
         if (isInvincible)
         {
             invincibilityTimer -= Time.deltaTime;
 
             // flicker effect - should be done in shader ideally, but good temporary solution for our demo @eliaf since u liked the flicker :3
-            // pingpong alpha between 0 and 1 to create a flicker effect = can also add to enemies to give them hit feedback aswell + knockback later
             if (sr != null)
             {
                 float alpha = Mathf.PingPong(Time.time * 10f, 1f);
@@ -54,6 +55,10 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth -= damage;
         Debug.Log($"[PlayerHealth] HP: {currentHealth}/{maxHealth}");
+
+        // Shake the camera on hit
+        if (CameraFollow.Instance != null)
+            CameraFollow.Instance.TriggerShake();
 
         if (currentHealth <= 0)
         {
@@ -92,7 +97,6 @@ public class PlayerHealth : MonoBehaviour
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
 
-        //
         currentHealth = maxHealth;
 
         if (sr != null)

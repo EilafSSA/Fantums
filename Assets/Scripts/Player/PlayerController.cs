@@ -25,6 +25,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float attackCooldown = 0.4f;
     [SerializeField] private LayerMask enemyLayer;
 
+    [Header("=== Dash ===")]
+    [SerializeField] private float dashSpeed = 18f;
+    [SerializeField] private float dashDuration = 0.15f;
+    [SerializeField] private float dashCooldown = 0.8f;
+
     private Animator anim; //addedbyEilaf
     private Rigidbody2D rb;
     private float moveInput;
@@ -32,7 +37,12 @@ public class PlayerController : MonoBehaviour
     private bool isClinging;
     private bool facingRight = true;
     private float attackTimer;
-    
+
+    // dashhh
+    private bool isDashing;
+    private float dashTimer;
+    private float dashCooldownTimer;
+    private float dashDirection;
 
     private void Awake()
     {
@@ -42,6 +52,9 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         anim = GetComponent<Animator>(); //addedbyEilaf
+
+        // don't process input while dashing (we can remove this later if we want anim-cancel or diractiloanl dash idk but good to know)
+        if (isDashing) return;
 
         moveInput = Input.GetAxisRaw("Horizontal");
 
@@ -53,11 +66,11 @@ public class PlayerController : MonoBehaviour
         );
 
         if (isGrounded)
-            {
-             anim.SetBool("IsGrounded", true);
-             anim.SetBool("IsClinging", false);
-            } //addedbyEilaf
-            else {anim.SetBool("IsGrounded", false); anim.SetBool("IsClinging", false);} //addedbyEilaf
+        {
+            anim.SetBool("IsGrounded", true);
+            anim.SetBool("IsClinging", false);
+        }
+        else { anim.SetBool("IsGrounded", false); anim.SetBool("IsClinging", false); } //addedbyEilaf
 
         bool clingContact = Physics2D.OverlapCircle(grabCheck.position, grabCheckRadius, clingLayer);
 
@@ -68,15 +81,8 @@ public class PlayerController : MonoBehaviour
             rb.gravityScale = 0f;
         }
 
-        if (isClinging && Input.GetMouseButtonUp(1))
-        {
-            ReleaseCling();
-        }
-
-        if (isClinging && !clingContact)
-        {
-            ReleaseCling();
-        }
+        if (isClinging && Input.GetMouseButtonUp(1)) ReleaseCling();
+        if (isClinging && !clingContact) ReleaseCling();
 
         if (Input.GetButtonDown("Jump"))
         {
@@ -96,8 +102,16 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (isClinging){ anim.SetBool("IsClinging", true);} //addedbyEilaf
-            else {anim.SetBool("IsClinging", false);} //addedbyEilaf
+        if (isClinging) { anim.SetBool("IsClinging", true); } //addedbyEilaf
+        else { anim.SetBool("IsClinging", false); } //addedbyEilaf
+
+        // dash input
+        dashCooldownTimer -= Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dashCooldownTimer <= 0f && !isClinging)
+        {
+            dashDirection = moveInput != 0f ? Mathf.Sign(moveInput) : (facingRight ? 1f : -1f);
+            StartCoroutine(DashRoutine());
+        }
 
         attackTimer -= Time.deltaTime;
         if (Input.GetMouseButtonDown(0) && attackTimer <= 0f)
@@ -115,6 +129,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isDashing)
+        {
+            rb.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f); // zero Y so no gravity drift during dash
+            return;
+        }
+
         if (isClinging)
         {
             rb.linearVelocity = Vector2.zero;
@@ -128,8 +148,23 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
             anim.SetBool("IsRunning", true); //addedbyEilaf
             anim.SetBool("IsClinging", false); //addedbyEilaf
-            
         }
+    }
+
+    private System.Collections.IEnumerator DashRoutine()
+    {
+        isDashing = true;
+        dashTimer = dashDuration;
+        dashCooldownTimer = dashCooldown;
+
+        rb.gravityScale = 0f;           // kill gravity so the dash stays level
+        anim.SetTrigger("Dash");        // hook up a Dash trigger in Animator if you wanna make one!! :3
+
+        yield return new WaitForSeconds(dashDuration);
+
+        isDashing = false;
+        rb.gravityScale = 3f;
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x * 0.3f, rb.linearVelocity.y); // bleed off dash speed smoothly
     }
 
     private void ReleaseCling()
@@ -181,4 +216,3 @@ public class PlayerController : MonoBehaviour
         }
     }
 }
-

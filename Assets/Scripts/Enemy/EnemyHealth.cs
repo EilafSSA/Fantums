@@ -1,5 +1,5 @@
 using UnityEngine;
-// btw im really sorry if the code isnt as clean, im trying to make it clean so anyone can really read it, trying to optimize it so like u get a general understanding on the whole thing and I guess i just like taking notes but feel free to remove them or add on them cause i check after like i push a github :D
+
 public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] private int maxHealth = 3;
@@ -22,7 +22,6 @@ public class EnemyHealth : MonoBehaviour
         Debug.Log($"Enemy HP: {currentHealth}/{maxHealth}");
         anim.SetTrigger("IsHurt"); //addedbyEilaf
 
-        
         StartCoroutine(FlashDamage());
 
         if (currentHealth <= 0)
@@ -43,6 +42,11 @@ public class EnemyHealth : MonoBehaviour
     private void Die()
     {
         Debug.Log("Enemy Died!");
+
+        // award score on kill
+        if (GameManager.Instance != null)
+            GameManager.Instance.AddEnemyKillScore();
+
         Destroy(gameObject);
     }
 }
