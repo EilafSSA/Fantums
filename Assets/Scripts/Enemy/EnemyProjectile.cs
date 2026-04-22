@@ -17,6 +17,7 @@ public class EnemyProjectile : MonoBehaviour
     [Tooltip("Layers that destroy this projectile on contact (god help me)")]
     [SerializeField] private LayerMask groundLayer;
 
+    private Animator anim; //addedbyEilaf
     private Rigidbody2D rb;
     private Vector2 direction = Vector2.right;
     private bool consumed;
@@ -32,11 +33,16 @@ public class EnemyProjectile : MonoBehaviour
         }
     }
 
+    private void Update() //addedbyEilaf
+    {
+        anim = GetComponent<Animator>(); //addedbyEilaf
+    }
+
     public void Launch(Vector2 dir, float overrideSpeed = -1f)
     {
         direction = dir.normalized;
         float finalSpeed = overrideSpeed > 0f ? overrideSpeed : speed;
-
+        
         if (rb != null)
             rb.linearVelocity = direction * finalSpeed;
 
@@ -51,11 +57,13 @@ public class EnemyProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        anim.SetTrigger("Shoot"); //addedbyEilaf
         HandleHit(other);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        anim.SetTrigger("Shoot"); //addedbyEilaf
         HandleHit(collision.collider);
     }
 

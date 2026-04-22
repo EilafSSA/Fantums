@@ -180,7 +180,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -757691210026439941, guid: 06fc62eb4714b5b4bb7fa972e5955e47, type: 3}
+  m_Sprite: {fileID: 7684265163082512653, guid: 3dca450d4cde1da47a1166cde05b896f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -292,10 +292,7 @@ MonoBehaviour:
   damage: 1
   lifetime: 4
   knockbackForce: 6
-  useGravity: 0
-  gravityScale: 0.4
   rotateToDirection: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
-  destroyOnGroundHit: 1
