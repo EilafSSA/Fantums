@@ -7,7 +7,7 @@ public class BlobSpewer : MonoBehaviour
     [Header("=== Targeting ===")]
     [SerializeField] private Transform player;
     [SerializeField] private float detectionRange = 10f;
-    [SerializeField] private LayerMask lineOfSightBlockers; // leave 0 to skip LoS check
+    [SerializeField] private LayerMask lineOfSightBlockers; // leave 0 to skip line of sight check
 
     [Header("=== Firing ===")]
     [SerializeField] private EnemyProjectile blobPrefab;
