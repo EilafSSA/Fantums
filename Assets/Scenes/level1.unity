@@ -84244,7 +84244,9 @@ MonoBehaviour:
   attackPoint: {fileID: 87894824}
   attackRange: 0.6
   attackDamage: 1
-  attackCooldown: 0.4
+  attackInputCooldown: 0.08
+  comboResetTime: 1
+  maxComboStep: 3
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
