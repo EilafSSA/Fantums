@@ -22,7 +22,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform attackPoint;
     [SerializeField] private float attackRange = 0.6f;
     [SerializeField] private int attackDamage = 1;
-    [SerializeField] private float attackCooldown = 0.4f;
+    [SerializeField] private float attackInputCooldown = 0.08f; // tiny just to stop spamclick abuse
+    [SerializeField] private float comboResetTime = 0.6f;       // if u dont click again within this window combo resets
+    [SerializeField] private int maxComboStep = 3;              // Attack_1 -> Attack_2 -> Attack_3
     [SerializeField] private LayerMask enemyLayer;
 
     [Header("=== Dash ===")]
@@ -38,6 +40,10 @@ public class PlayerController : MonoBehaviour
     private bool facingRight = true;
     private float attackTimer;
 
+    // combo tracking
+    private int comboStep = 0;
+    private float comboResetTimer;
+
     // dashhh
     private bool isDashing;
     private float dashTimer;
@@ -47,12 +53,11 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>(); //addedbyEilaf - moved here so it only runs once instead of every frame
     }
 
     private void Update()
     {
-        anim = GetComponent<Animator>(); //addedbyEilaf
-
         // don't process input while dashing (we can remove this later if we want anim-cancel or diractiloanl dash idk but good to know)
         if (isDashing) return;
 
@@ -113,11 +118,23 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(DashRoutine());
         }
 
+        // if the player stops clicking midcombo, this quietly resets the chain back to 0
+        if (comboStep > 0)
+        {
+            comboResetTimer -= Time.deltaTime;
+            if (comboResetTimer <= 0f)
+            {
+                comboStep = 0;
+                anim.SetInteger("ComboStep", 0);
+            }
+        }
+
+        // === ATTACK INPUT ===
         attackTimer -= Time.deltaTime;
         if (Input.GetMouseButtonDown(0) && attackTimer <= 0f)
         {
             Attack();
-            attackTimer = attackCooldown;
+            attackTimer = attackInputCooldown;
         }
 
         if (!isClinging)
@@ -176,7 +193,17 @@ public class PlayerController : MonoBehaviour
 
     private void Attack()
     {
+        // advance combo step bf4 firing the trigger so the animator sees the right int
+        if (comboStep < maxComboStep)
+            comboStep++;
+        else
+            comboStep = 1; // loop back to the start of the combo once we finish all 3
+
+        anim.SetInteger("ComboStep", comboStep);
         anim.SetTrigger("Attack"); //addedbyEilaf
+
+        comboResetTimer = comboResetTime;
+
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
 
         foreach (Collider2D hit in hits)
@@ -188,6 +215,13 @@ public class PlayerController : MonoBehaviour
             if (enemyHP != null)
                 enemyHP.TakeDamage(attackDamage);
         }
+    }
+
+
+    public void ResetCombo()
+    {
+        comboStep = 0;
+        anim.SetInteger("ComboStep", 0);
     }
 
     private void Flip()
