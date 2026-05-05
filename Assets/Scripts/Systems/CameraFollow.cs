@@ -26,7 +26,7 @@ public class CameraFollow : MonoBehaviour
         Instance = this;
     }
 
-    //call this from PlayerHealth (or anywhere) to trigger a shake (for like the enemies? or maybe like idk but yes.)
+    //call this from PlayerHealth (or anywhere) to trigger a shake
     public void TriggerShake()
     {
         shakeTimer = shakeDuration;

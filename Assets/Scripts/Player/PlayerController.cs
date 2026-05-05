@@ -50,6 +50,8 @@ public class PlayerController : MonoBehaviour
     private float dashCooldownTimer;
     private float dashDirection;
 
+    private Transform currentClingTarget;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -77,11 +79,13 @@ public class PlayerController : MonoBehaviour
         }
         else { anim.SetBool("IsGrounded", false); anim.SetBool("IsClinging", false); } //addedbyEilaf
 
-        bool clingContact = Physics2D.OverlapCircle(grabCheck.position, grabCheckRadius, clingLayer);
+        Collider2D clingCollider = Physics2D.OverlapCircle(grabCheck.position, grabCheckRadius, clingLayer);
+        bool clingContact = clingCollider != null;
 
         if (clingContact && !isGrounded && Input.GetMouseButtonDown(1) && !isClinging)
         {
             isClinging = true;
+            currentClingTarget = clingCollider.transform;
             rb.linearVelocity = Vector2.zero;
             rb.gravityScale = 0f;
         }
@@ -96,6 +100,7 @@ public class PlayerController : MonoBehaviour
                 float awayDir = facingRight ? 1f : -1f;
                 rb.gravityScale = 3f;
                 isClinging = false;
+                currentClingTarget = null;
                 rb.linearVelocity = Vector2.zero;
                 rb.AddForce(new Vector2(awayDir * clingJumpForceX, clingJumpForceY), ForceMode2D.Impulse);
             }
@@ -148,23 +153,27 @@ public class PlayerController : MonoBehaviour
     {
         if (isDashing)
         {
-            rb.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f); // zero Y so no gravity drift during dash
+            rb.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f);
             return;
         }
 
         if (isClinging)
         {
+            if (currentClingTarget != null)
+            {
+                transform.position = currentClingTarget.position;
+            }
             rb.linearVelocity = Vector2.zero;
             rb.gravityScale = 0f;
-            anim.SetBool("IsClinging", true); //addedbyEilaf
-            anim.SetBool("IsRunning", false); //addedbyEilaf
+            anim.SetBool("IsClinging", true);
+            anim.SetBool("IsRunning", false);
         }
         else
         {
             rb.gravityScale = 3f;
             rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
-            anim.SetBool("IsRunning", true); //addedbyEilaf
-            anim.SetBool("IsClinging", false); //addedbyEilaf
+            anim.SetBool("IsRunning", true);
+            anim.SetBool("IsClinging", false);
         }
     }
 
@@ -187,8 +196,9 @@ public class PlayerController : MonoBehaviour
     private void ReleaseCling()
     {
         isClinging = false;
+        currentClingTarget = null;
         rb.gravityScale = 3f;
-        anim.SetBool("IsClinging", false); //addedbyEilaf
+        anim.SetBool("IsClinging", false);
     }
 
     private void Attack()
@@ -213,7 +223,28 @@ public class PlayerController : MonoBehaviour
                 enemyHP = hit.GetComponentInParent<EnemyHealth>();
 
             if (enemyHP != null)
+            {
                 enemyHP.TakeDamage(attackDamage);
+                continue;
+            }
+
+            ShadowBossHitbox bossHitbox = hit.GetComponent<ShadowBossHitbox>();
+            if (bossHitbox == null)
+                bossHitbox = hit.GetComponentInParent<ShadowBossHitbox>();
+
+            if (bossHitbox != null)
+                bossHitbox.TakeDamage(attackDamage);
+        }
+        
+        Collider2D[] allHits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange);
+        foreach (Collider2D hit in allHits)
+        {
+            ShadowBossHitbox bossHitbox = hit.GetComponent<ShadowBossHitbox>();
+            if (bossHitbox != null)
+            {
+                bossHitbox.TakeDamage(attackDamage);
+                break;
+            }
         }
     }
 

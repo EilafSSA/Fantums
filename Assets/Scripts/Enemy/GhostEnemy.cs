@@ -149,7 +149,6 @@ public class GhostEnemy : MonoBehaviour
 
         Vector2 toPlayer = (Vector2)player.position - (Vector2)transform.position;
 
-        // don't jitter when basically on top of the player
         if (toPlayer.magnitude < chaseStopDistance)
         {
             rb.linearVelocity = Vector2.zero;

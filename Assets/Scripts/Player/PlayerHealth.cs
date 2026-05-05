@@ -7,13 +7,15 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float invincibilityTime = 1.5f;
     [SerializeField] private float respawnDelay = 0.5f;
 
-    private Animator anim; //addedbyEilaf
+    private Animator anim;
     private int currentHealth;
     private bool isInvincible;
     private float invincibilityTimer;
     private SpriteRenderer sr;
     private Color originalColor;
     private Rigidbody2D rb;
+
+    public static System.Action OnPlayerDied;
 
     private void Awake()
     {
@@ -27,13 +29,12 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
-        anim = GetComponent<Animator>(); //addedbyEilaf
+        anim = GetComponent<Animator>();
 
         if (isInvincible)
         {
             invincibilityTimer -= Time.deltaTime;
 
-            // flicker effect - should be done in shader ideally, but good temporary solution for our demo @eliaf since u liked the flicker :3
             if (sr != null)
             {
                 float alpha = Mathf.PingPong(Time.time * 10f, 1f);
@@ -54,9 +55,7 @@ public class PlayerHealth : MonoBehaviour
         if (isInvincible) return;
 
         currentHealth -= damage;
-        Debug.Log($"[PlayerHealth] HP: {currentHealth}/{maxHealth}");
 
-        // Shake the camera on hit
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.TriggerShake();
 
@@ -72,7 +71,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("[PlayerHealth] Player Died!");
+        OnPlayerDied?.Invoke();
         StartCoroutine(RespawnRoutine());
     }
 

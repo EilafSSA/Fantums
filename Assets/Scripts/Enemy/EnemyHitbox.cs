@@ -48,7 +48,7 @@ public class EnemyHitbox : MonoBehaviour
             return;
         }
 
-        // nockback
+        // knockback
         Rigidbody2D playerRB = other.GetComponent<Rigidbody2D>();
         if (playerRB == null) playerRB = other.GetComponentInParent<Rigidbody2D>();
 
