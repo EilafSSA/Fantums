@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 88221c960633fe44cb1317bd5e461cef
+guid: 2d219360f3114c6428e5ab4d03c0596e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2876737211199568515
-    second: Layounewt_0
+      213: 5802768147746583265
+    second: Layout 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Layounewt_0
+      name: Layout 1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 1920
-        height: 19672
+        height: 11992
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d754d4e7fb6c318d0800000000000000
-      internalID: -2876737211199568515
+      spriteID: 1e2f260d2e2978050800000000000000
+      internalID: 5802768147746583265
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Layounewt_0: -2876737211199568515
+      Layout 1_0: 5802768147746583265
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
