@@ -24,6 +24,8 @@ public class BlobSpewer : MonoBehaviour
 
     private void Start()
     {
+        anim = GetComponent<Animator>(); //addedbyEilaf
+        
         fireTimer = firstShotDelay;
 
         if (player == null)
@@ -35,7 +37,6 @@ public class BlobSpewer : MonoBehaviour
 
     private void Update()
     {
-        anim = GetComponent<Animator>(); //addedbyEilaf
 
         if (player == null || blobPrefab == null || firePoint == null) return;
 

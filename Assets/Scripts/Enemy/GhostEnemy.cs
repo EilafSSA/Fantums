@@ -45,11 +45,13 @@ public class GhostEnemy : MonoBehaviour
     private float bobSeed;
     private float nextFlipAllowedTime;
 
+
     private enum State { Patrol, LookBack, Chase }
     private State state = State.Patrol;
 
     private void Awake()
     {
+        anim = GetComponent<Animator>(); //addedbyEilaf
         rb = GetComponent<Rigidbody2D>();
         baseScale = transform.localScale;
         bobSeed = Random.value * 100f;
@@ -79,6 +81,13 @@ public class GhostEnemy : MonoBehaviour
     private void FixedUpdate()
     {
         bool canSee = CanSeePlayer();
+
+
+        if (canSee)
+        {
+            anim.SetBool("IsChasing", true);
+        }
+        else { anim.SetBool("IsChasing", false);} //addedbyEilaf
 
         if (canSee)
         {
