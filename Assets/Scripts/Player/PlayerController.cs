@@ -30,6 +30,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashDuration = 0.15f;
     [SerializeField] private float dashCooldown = 0.8f;
 
+    [Header("=== Audio ===")]
+    [SerializeField] private AudioSource playerSource;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip dashSound;
+    [SerializeField] private AudioClip attackSound;
+    [SerializeField] private AudioClip clingSound;
+
     private Animator anim; //addedbyEilaf
     private Rigidbody2D rb;
     private float moveInput;
@@ -77,6 +84,7 @@ public class PlayerController : MonoBehaviour
         if (clingContact && !isGrounded && Input.GetMouseButtonDown(1) && !isClinging)
         {
             isClinging = true;
+            playerSource.PlayOneShot(clingSound); //audio
             rb.linearVelocity = Vector2.zero;
             rb.gravityScale = 0f;
         }
@@ -99,6 +107,7 @@ public class PlayerController : MonoBehaviour
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 anim.SetTrigger("Jump"); //addedbyEilaf
+                playerSource.PlayOneShot(jumpSound); //audio
             }
         }
 
@@ -111,6 +120,7 @@ public class PlayerController : MonoBehaviour
         {
             dashDirection = moveInput != 0f ? Mathf.Sign(moveInput) : (facingRight ? 1f : -1f);
             StartCoroutine(DashRoutine());
+            playerSource.PlayOneShot(dashSound); //audio
         }
 
         attackTimer -= Time.deltaTime;
@@ -176,7 +186,14 @@ public class PlayerController : MonoBehaviour
 
     private void Attack()
     {
-        anim.SetTrigger("Attack"); //addedbyEilaf
+        if (playerSource != null && attackSound != null) //Play the Sound FIRST with Randomized Pitch
+        {  
+            playerSource.pitch = UnityEngine.Random.Range(0.85f, 1.15f);//set the pitch BEFORE playing the sound 
+            playerSource.PlayOneShot(attackSound);
+        }
+
+       
+        anim.SetTrigger("Attack");  //Original Attack Logic
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
 
         foreach (Collider2D hit in hits)

@@ -7,6 +7,11 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float invincibilityTime = 1.5f;
     [SerializeField] private float respawnDelay = 0.5f;
 
+    [Header("=== Audio ===")]
+    [SerializeField] private AudioSource playerSource;
+    [SerializeField] private AudioClip hurtSound;
+    [SerializeField] private AudioClip deathSound;
+
     private Animator anim; //addedbyEilaf
     private int currentHealth;
     private bool isInvincible;
@@ -54,6 +59,7 @@ public class PlayerHealth : MonoBehaviour
         if (isInvincible) return;
 
         currentHealth -= damage;
+        playerSource.PlayOneShot(hurtSound); //audio
         Debug.Log($"[PlayerHealth] HP: {currentHealth}/{maxHealth}");
 
         // Shake the camera on hit
@@ -72,8 +78,10 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
+        playerSource.PlayOneShot(deathSound); //audio
         Debug.Log("[PlayerHealth] Player Died!");
         StartCoroutine(RespawnRoutine());
+        
     }
 
     private System.Collections.IEnumerator RespawnRoutine()
