@@ -185,7 +185,8 @@ public class ShadowArm : MonoBehaviour
         transform.position = Vector3.Lerp(startPosition, targetPosition, riseProgress);
         
         float scaleY = Mathf.Lerp(0.1f, 3f, riseProgress);
-        transform.localScale = new Vector3(0.5f, scaleY, 1f);
+        //transform.localScale = new Vector3(0.5f, scaleY, 1f);
+        transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
         
         if (riseProgress >= 1f)
         {
@@ -209,7 +210,8 @@ public class ShadowArm : MonoBehaviour
         
         float dist = Vector3.Distance(transform.position, startPosition);
         float scaleY = Mathf.Lerp(0.1f, 3f, dist / riseHeight);
-        transform.localScale = new Vector3(0.5f, scaleY, 1f);
+        //transform.localScale = new Vector3(0.5f, scaleY, 1f);
+        transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
         
         if (dist < 0.1f)
         {

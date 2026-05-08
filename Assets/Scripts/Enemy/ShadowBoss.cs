@@ -48,13 +48,13 @@ public class ShadowBoss : MonoBehaviour
     private Vector3 baseScale;
     private bool isDefeated = false;
 
-    private static readonly int AnimPhase = Animator.StringToHash("Phase");
-    private static readonly int AnimIsHurt = Animator.StringToHash("IsHurt");
-    private static readonly int AnimIsInvincible = Animator.StringToHash("IsInvincible");
-    private static readonly int AnimTurnToValve = Animator.StringToHash("TurnToValve");
-    private static readonly int AnimSpinValve = Animator.StringToHash("SpinValve");
-    private static readonly int AnimTurnBack = Animator.StringToHash("TurnBack");
-    private static readonly int AnimDefeated = Animator.StringToHash("Defeated");
+    //private static readonly int AnimPhase = Animator.StringToHash("Phase");
+    //private static readonly int AnimIsHurt = Animator.StringToHash("IsHurt");
+    //private static readonly int AnimIsInvincible = Animator.StringToHash("IsInvincible");
+    //private static readonly int AnimTurnToValve = Animator.StringToHash("TurnToValve");
+    //private static readonly int AnimSpinValve = Animator.StringToHash("SpinValve");
+    //private static readonly int AnimTurnBack = Animator.StringToHash("TurnBack");
+     //static readonly int AnimDefeated = Animator.StringToHash("Defeated");
 
     public System.Action<int> OnHealthChanged;
     public System.Action<BossPhase> OnPhaseChanged;
@@ -141,8 +141,8 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetBool(AnimIsInvincible, false);
-            animator.SetInteger(AnimPhase, 1);
+            animator.SetBool("AnimIsInvincible", false); //eilaf
+            animator.SetInteger("AnimPhase", 1); //eilaf important
         }
         
         transform.localScale = baseScale;
@@ -221,7 +221,7 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetTrigger(AnimIsHurt);
+            animator.SetTrigger("AnimIsHurt"); //eilaf
         }
         
         PlaySound(hurtSound);
@@ -244,7 +244,7 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetTrigger(AnimTurnToValve);
+            animator.SetTrigger("AnimTurnToValve"); //eilaf
         }
         
         yield return new WaitForSeconds(0.5f);
@@ -253,7 +253,7 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetTrigger(AnimSpinValve);
+            animator.SetTrigger("AnimSpinValve"); //eilaf 
         }
         
         PlaySound(valveSound);
@@ -264,7 +264,7 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetTrigger(AnimTurnBack);
+            animator.SetTrigger("AnimTurnBack"); //eilaf
         }
         
         yield return new WaitForSeconds(0.5f);
@@ -284,7 +284,7 @@ public class ShadowBoss : MonoBehaviour
             arena.OnBossInvincibilityStart();
         
         if (animator != null)
-            animator.SetBool(AnimIsInvincible, true);
+            animator.SetBool("AnimIsInvincible", true); //eilaf
     }
 
     private void UpdateInvincibility()
@@ -313,7 +313,7 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetBool(AnimIsInvincible, false);
+            animator.SetBool("AnimIsInvincible", false); //eilaf
         }
         
 
@@ -373,7 +373,7 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetInteger(AnimPhase, phaseNum);
+            animator.SetInteger("AnimPhase", phaseNum);
         }
         
         PlaySound(phaseTransitionSound);
@@ -399,7 +399,7 @@ public class ShadowBoss : MonoBehaviour
             arena.OnBossInvincibilityEnd();
         
         if (animator != null)
-            animator.SetTrigger(AnimDefeated);
+            animator.SetTrigger("AnimDefeated");
         
         PlaySound(deathSound);
         

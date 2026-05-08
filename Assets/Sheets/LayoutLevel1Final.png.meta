@@ -4275,7 +4275,7 @@ TextureImporter:
         serializedVersion: 2
         x: 360
         y: 0
-        width: 360
+        width: 353
         height: 120
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -4295,9 +4295,9 @@ TextureImporter:
       name: LayoutLevel1Final_260
       rect:
         serializedVersion: 2
-        x: 720
+        x: 713
         y: 0
-        width: 360
+        width: 367
         height: 120
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
