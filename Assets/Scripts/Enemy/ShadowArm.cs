@@ -24,6 +24,7 @@ public class ShadowArm : MonoBehaviour
     private enum ArmState { Warning, Rising, Active, Retracting, Inactive }
     private ArmState state = ArmState.Inactive;
     
+    private Animator anim; //addedbyEilaf
     private Vector3 startPosition;
     private Vector3 targetPosition;
     private Vector3 emergeDir;
@@ -40,6 +41,7 @@ public class ShadowArm : MonoBehaviour
 
     private void Awake()
     {
+        anim = GetComponent<Animator>(); //addedbyEilaf
         spriteRenderer = GetComponent<SpriteRenderer>();
         
         if (spriteRenderer != null && spriteRenderer.sprite == null)
@@ -151,6 +153,7 @@ public class ShadowArm : MonoBehaviour
 
     private void UpdateWarning()
     {
+        anim.SetTrigger("warn"); //addedbyEilaf
         warningTimer -= Time.deltaTime;
         
         float pulse = Mathf.Abs(Mathf.Sin(Time.time * 10f));
@@ -169,6 +172,7 @@ public class ShadowArm : MonoBehaviour
         {
             riseProgress = 0f;
             state = ArmState.Rising;
+            anim.SetTrigger("rise"); //addedbyEilaf
             
             if (spriteRenderer != null)
                 spriteRenderer.color = armColor;
@@ -179,6 +183,7 @@ public class ShadowArm : MonoBehaviour
 
     private void UpdateRising()
     {
+        anim.SetTrigger("rise"); //addedbyEilaf
         riseProgress += Time.deltaTime * riseSpeed / riseHeight;
         riseProgress = Mathf.Clamp01(riseProgress);
         
@@ -196,12 +201,14 @@ public class ShadowArm : MonoBehaviour
 
     private void UpdateActive()
     {
+        anim.SetTrigger("active"); //addedbyEilaf
         float sway = Mathf.Sin(Time.time * 3f + transform.position.x + transform.position.y) * 0.05f;
         transform.position = targetPosition + perpDir * sway;
     }
 
     private void UpdateRetracting()
     {
+        anim.SetTrigger("retract"); //addedbyEilaf
         transform.position = Vector3.MoveTowards(
             transform.position, 
             startPosition, 
