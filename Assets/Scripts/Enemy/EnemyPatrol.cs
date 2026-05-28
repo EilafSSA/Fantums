@@ -11,6 +11,10 @@ public class EnemyPatrol : MonoBehaviour
     [SerializeField] private float arrivalThreshold = 0.3f;
     [SerializeField] private float waitTime = 0f;
 
+    //[Header("=== Audio ===")]
+    //[SerializeField] private AudioSource enemySource;
+    //[SerializeField] private AudioClip soundEffect; //discoverySound
+
     private Animator anim; //addedbyEilaf
     private Transform currentTarget;
     private Rigidbody2D rb;

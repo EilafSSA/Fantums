@@ -32,6 +32,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashDuration = 0.15f;
     [SerializeField] private float dashCooldown = 0.8f;
 
+    [Header("=== Audio ===")]
+    [SerializeField] private AudioSource playerSource;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip dashSound;
+    [SerializeField] private AudioClip attackSound;
+    [SerializeField] private AudioClip clingSound;
+
     private Animator anim; //addedbyEilaf
     private Rigidbody2D rb;
     private float moveInput;
@@ -85,7 +92,17 @@ public class PlayerController : MonoBehaviour
         if (clingContact && !isGrounded && Input.GetMouseButtonDown(1) && !isClinging)
         {
             isClinging = true;
+            
+            // 1.new logic (Staging)
             currentClingTarget = clingCollider.transform;
+
+            // 2.audio logic (Audio-add)
+            if (playerSource != null && clingSound != null)
+            {
+                playerSource.PlayOneShot(clingSound);
+            }
+
+            // 3. movement resetting logic
             rb.linearVelocity = Vector2.zero;
             rb.gravityScale = 0f;
         }
@@ -109,6 +126,7 @@ public class PlayerController : MonoBehaviour
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 anim.SetTrigger("Jump"); //addedbyEilaf
+                playerSource.PlayOneShot(jumpSound); //audio
             }
         }
 
@@ -121,6 +139,7 @@ public class PlayerController : MonoBehaviour
         {
             dashDirection = moveInput != 0f ? Mathf.Sign(moveInput) : (facingRight ? 1f : -1f);
             StartCoroutine(DashRoutine());
+            playerSource.PlayOneShot(dashSound); //audio
         }
 
         // if the player stops clicking midcombo, this quietly resets the chain back to 0
@@ -203,17 +222,32 @@ public class PlayerController : MonoBehaviour
 
     private void Attack()
     {
+        // 1. AUDIO LOGIC (Plays right when clicking)
+        if (playerSource != null && attackSound != null)
+        {
+            playerSource.pitch = UnityEngine.Random.Range(0.85f, 1.15f);
+            playerSource.PlayOneShot(attackSound);
+        }
+        
+
+        // 2.NEW COMBO SYSTEM LOGIC (Staging)
         // advance combo step bf4 firing the trigger so the animator sees the right int
         if (comboStep < maxComboStep)
+        {
             comboStep++;
+        }
         else
+        {
             comboStep = 1; // loop back to the start of the combo once we finish all 3
+        }
+    
 
         anim.SetInteger("ComboStep", comboStep);
-        anim.SetTrigger("Attack"); //addedbyEilaf
+        anim.SetTrigger("Attack"); // addedbyEilaf
 
         comboResetTimer = comboResetTime;
 
+        // 3.NEW HIT DETECTION LOGIC (Regular Enemies & Shadow Boss)
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
 
         foreach (Collider2D hit in hits)
@@ -235,7 +269,7 @@ public class PlayerController : MonoBehaviour
             if (bossHitbox != null)
                 bossHitbox.TakeDamage(attackDamage);
         }
-        
+
         Collider2D[] allHits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange);
         foreach (Collider2D hit in allHits)
         {
@@ -247,6 +281,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
 
 
     public void ResetCombo()

@@ -4,6 +4,8 @@ public class DoorTransition : MonoBehaviour
 {
     [Header("=== Destination ===")]
     [SerializeField] private Transform teleportTarget;
+    [SerializeField] private AudioSource doorSource; //audio
+    [SerializeField] private AudioClip teleportSound;//audio
 
     private bool playerInRange;
     private GameObject playerObject;
@@ -27,6 +29,11 @@ public class DoorTransition : MonoBehaviour
             }
 
             playerObject.transform.position = teleportTarget.position;
+
+            if (doorSource != null && teleportSound != null)
+            {
+                doorSource.PlayOneShot(teleportSound);//audio
+            }
             Debug.Log("Player teleported!");
         }
     }

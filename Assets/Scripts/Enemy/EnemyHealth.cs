@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
+    [Header("=== Audio ===")]
+    [SerializeField] private AudioSource enemySource;
+    [SerializeField] private AudioClip soundEffect; //deathSound
+    
+    
+    
     [SerializeField] private int maxHealth = 3;
     private int currentHealth;
     private Animator anim; //addedbyEilaf
@@ -43,9 +49,16 @@ public class EnemyHealth : MonoBehaviour
     {
         Debug.Log("Enemy Died!");
 
+        // This plays the sound at the ghost's position and survives the Destroy() call
+        if (soundEffect != null)
+        {
+            AudioSource.PlayClipAtPoint(soundEffect, transform.position);
+        }
+
         // award score on kill
         if (GameManager.Instance != null)
             GameManager.Instance.AddEnemyKillScore();
+        
 
         Destroy(gameObject);
     }
