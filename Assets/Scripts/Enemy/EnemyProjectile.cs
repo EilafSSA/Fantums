@@ -17,6 +17,9 @@ public class EnemyProjectile : MonoBehaviour
     [Tooltip("Layers that destroy this projectile on contact (god help me)")]
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("=== Audio ===")]
+    [SerializeField] private AudioClip popSound;
+
     private Animator anim; //addedbyEilaf
     private Rigidbody2D rb;
     private Vector2 direction = Vector2.right;
@@ -31,11 +34,9 @@ public class EnemyProjectile : MonoBehaviour
             rb.gravityScale = 0f;
             rb.freezeRotation = true;
         }
-    }
 
-    private void Update() //addedbyEilaf
-    {
-        anim = GetComponent<Animator>(); //addedbyEilaf
+        // Optimization: Grab animator ONCE at awake instead of abusing Update()
+        anim = GetComponent<Animator>(); 
     }
 
     public void Launch(Vector2 dir, float overrideSpeed = -1f)
@@ -57,13 +58,13 @@ public class EnemyProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        anim.SetTrigger("Shoot"); //addedbyEilaf
+        if (anim != null) anim.SetTrigger("Shoot"); // addedbyEilaf (Safe check)
         HandleHit(other);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        anim.SetTrigger("Shoot"); //addedbyEilaf
+        if (anim != null) anim.SetTrigger("Shoot"); // addedbyEilaf (Safe check)
         HandleHit(collision.collider);
     }
 
@@ -78,6 +79,7 @@ public class EnemyProjectile : MonoBehaviour
         if (hp == null) hp = other.GetComponentInParent<PlayerHealth>();
         if (hp == null) hp = other.GetComponentInChildren<PlayerHealth>();
 
+        // 1. HIT PLAYER LOGIC
         if (hp != null)
         {
             hp.TakeDamage(damage);
@@ -92,17 +94,29 @@ public class EnemyProjectile : MonoBehaviour
                 pRB.AddForce(knockDir * knockbackForce, ForceMode2D.Impulse);
             }
 
+            TriggerPopAudio();
             consumed = true;
             Destroy(gameObject);
             return;
         }
 
+        // 2. HIT GROUND/WALL LOGIC
         if (((1 << other.gameObject.layer) & groundLayer.value) != 0)
         {
+            TriggerPopAudio();
             consumed = true;
             Destroy(gameObject);
             return;
         }
+    }
 
+    // Audio helper function to execute the clip instantly in 3D space
+    private void TriggerPopAudio()
+    {
+        if (popSound != null)
+        {
+            // Plays the sound right at the projectile's position even if the object disappears
+            AudioSource.PlayClipAtPoint(popSound, transform.position, 0.7f);
+        }
     }
 }

@@ -20,6 +20,10 @@ public class ShadowArm : MonoBehaviour
     
     [Header("=== Visual ===")]
     [SerializeField] private Color armColor = new Color(0.3f, 0f, 0.5f, 1f);
+
+    [Header("=== Audio ===")]
+    [SerializeField] private AudioSource armSource;
+    [SerializeField] private AudioClip warningSound;
     
     private enum ArmState { Warning, Rising, Active, Retracting, Inactive }
     private ArmState state = ArmState.Inactive;
@@ -43,6 +47,9 @@ public class ShadowArm : MonoBehaviour
     {
         anim = GetComponent<Animator>(); //addedbyEilaf
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Fallback optimization: Grab attached AudioSource if not manually dragged in
+        if (armSource == null) armSource = GetComponent<AudioSource>();
         
         if (spriteRenderer != null && spriteRenderer.sprite == null)
         {
@@ -92,6 +99,15 @@ public class ShadowArm : MonoBehaviour
         isActive = true;
         
         gameObject.SetActive(true);
+        
+        // ANIMATION: Fire the warning state trigger EXACTLY ONCE
+        if (anim != null) anim.SetTrigger("warn");
+
+        // AUDIO: Play the warning sound on emergence right where the arm spawns
+        if (armSource != null && warningSound != null)
+        {
+            armSource.PlayOneShot(warningSound);
+        }
         
         if (spriteRenderer != null)
         {
@@ -145,6 +161,9 @@ public class ShadowArm : MonoBehaviour
     {
         if (state == ArmState.Inactive || state == ArmState.Retracting) return;
         state = ArmState.Retracting;
+
+        // ANIMATION: Fire the retract trigger exactly once on transition
+        if (anim != null) anim.SetTrigger("retract");
     }
 
     public void EnableCorruption(bool enable)
@@ -153,7 +172,6 @@ public class ShadowArm : MonoBehaviour
 
     private void UpdateWarning()
     {
-        anim.SetTrigger("warn"); //addedbyEilaf
         warningTimer -= Time.deltaTime;
         
         float pulse = Mathf.Abs(Mathf.Sin(Time.time * 10f));
@@ -172,7 +190,9 @@ public class ShadowArm : MonoBehaviour
         {
             riseProgress = 0f;
             state = ArmState.Rising;
-            anim.SetTrigger("rise"); //addedbyEilaf
+            
+            // ANIMATION: Fire the rise trigger exactly once on transition
+            if (anim != null) anim.SetTrigger("rise"); 
             
             if (spriteRenderer != null)
                 spriteRenderer.color = armColor;
@@ -183,32 +203,31 @@ public class ShadowArm : MonoBehaviour
 
     private void UpdateRising()
     {
-        anim.SetTrigger("rise"); //addedbyEilaf
         riseProgress += Time.deltaTime * riseSpeed / riseHeight;
         riseProgress = Mathf.Clamp01(riseProgress);
         
         transform.position = Vector3.Lerp(startPosition, targetPosition, riseProgress);
         
         float scaleY = Mathf.Lerp(0.1f, 3f, riseProgress);
-        //transform.localScale = new Vector3(0.5f, scaleY, 1f);
         transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
         
         if (riseProgress >= 1f)
         {
             state = ArmState.Active;
+            
+            // ANIMATION: Fire the active trigger exactly once on transition
+            if (anim != null) anim.SetTrigger("active");
         }
     }
 
     private void UpdateActive()
     {
-        anim.SetTrigger("active"); //addedbyEilaf
         float sway = Mathf.Sin(Time.time * 3f + transform.position.x + transform.position.y) * 0.05f;
         transform.position = targetPosition + perpDir * sway;
     }
 
     private void UpdateRetracting()
     {
-        anim.SetTrigger("retract"); //addedbyEilaf
         transform.position = Vector3.MoveTowards(
             transform.position, 
             startPosition, 
@@ -217,7 +236,6 @@ public class ShadowArm : MonoBehaviour
         
         float dist = Vector3.Distance(transform.position, startPosition);
         float scaleY = Mathf.Lerp(0.1f, 3f, dist / riseHeight);
-        //transform.localScale = new Vector3(0.5f, scaleY, 1f);
         transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
         
         if (dist < 0.1f)
@@ -227,16 +245,6 @@ public class ShadowArm : MonoBehaviour
             OnFullyRetracted?.Invoke(this);
             gameObject.SetActive(false);
         }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        TryDamagePlayer(other);
-    }
-
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        TryDamagePlayer(other);
     }
 
     private void TryDamagePlayer(Collider2D other)
@@ -255,7 +263,7 @@ public class ShadowArm : MonoBehaviour
             
             Rigidbody2D playerRb = other.GetComponent<Rigidbody2D>();
             if (playerRb == null)
-                playerRb = other.GetComponentInParent<Rigidbody2D>();
+                playerRb = playerRb = other.GetComponentInParent<Rigidbody2D>();
                 
             if (playerRb != null)
             {
@@ -265,5 +273,15 @@ public class ShadowArm : MonoBehaviour
                 playerRb.AddForce(knockbackDir * knockbackForce, ForceMode2D.Impulse);
             }
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        TryDamagePlayer(other);
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        TryDamagePlayer(other);
     }
 }

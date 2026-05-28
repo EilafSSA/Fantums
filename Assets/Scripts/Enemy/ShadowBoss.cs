@@ -33,6 +33,7 @@ public class ShadowBoss : MonoBehaviour
     [SerializeField] private AudioClip phaseTransitionSound;
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private AudioClip valveSound;
+    [SerializeField] private AudioClip tableSlamSound;
 
     public enum BossState { Idle, Hurt, TurningToValve, SpinningValve, TurningBack, Invincible, Defeated }
     public enum BossPhase { Phase1, Phase2, Phase3 }
@@ -47,14 +48,6 @@ public class ShadowBoss : MonoBehaviour
     private Vector3 basePosition;
     private Vector3 baseScale;
     private bool isDefeated = false;
-
-    //private static readonly int AnimPhase = Animator.StringToHash("Phase");
-    //private static readonly int AnimIsHurt = Animator.StringToHash("IsHurt");
-    //private static readonly int AnimIsInvincible = Animator.StringToHash("IsInvincible");
-    //private static readonly int AnimTurnToValve = Animator.StringToHash("TurnToValve");
-    //private static readonly int AnimSpinValve = Animator.StringToHash("SpinValve");
-    //private static readonly int AnimTurnBack = Animator.StringToHash("TurnBack");
-     //static readonly int AnimDefeated = Animator.StringToHash("Defeated");
 
     public System.Action<int> OnHealthChanged;
     public System.Action<BossPhase> OnPhaseChanged;
@@ -141,8 +134,8 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetBool("AnimIsInvincible", false); //eilaf
-            animator.SetInteger("AnimPhase", 1); //eilaf important
+            animator.SetBool("AnimIsInvincible", false); 
+            animator.SetInteger("AnimPhase", 1); 
         }
         
         transform.localScale = baseScale;
@@ -221,7 +214,7 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetTrigger("AnimIsHurt"); //eilaf
+            animator.SetTrigger("AnimIsHurt"); 
         }
         
         PlaySound(hurtSound);
@@ -240,33 +233,33 @@ public class ShadowBoss : MonoBehaviour
 
     private IEnumerator ValveSequence()
     {
+        // 1. Boss Turns around
         currentState = BossState.TurningToValve;
-        
         if (animator != null)
         {
-            animator.SetTrigger("AnimTurnToValve"); //eilaf
+            animator.SetTrigger("AnimTurnToValve"); 
         }
-        
         yield return new WaitForSeconds(0.5f);
         
+        // 2. Boss Smashes Table
         currentState = BossState.SpinningValve;
-        
         if (animator != null)
         {
-            animator.SetTrigger("AnimSpinValve"); //eilaf 
+            animator.SetTrigger("AnimSpinValve"); 
         }
         
+        // Layering the physical smash with the mechanical valve audio activation
+        PlaySound(tableSlamSound);
         PlaySound(valveSound);
         
         yield return new WaitForSeconds(1f);
         
+        // 3. Boss Turns Back to face Player
         currentState = BossState.TurningBack;
-        
         if (animator != null)
         {
-            animator.SetTrigger("AnimTurnBack"); //eilaf
+            animator.SetTrigger("AnimTurnBack"); 
         }
-        
         yield return new WaitForSeconds(0.5f);
         
         EnterInvincibility();
@@ -284,7 +277,7 @@ public class ShadowBoss : MonoBehaviour
             arena.OnBossInvincibilityStart();
         
         if (animator != null)
-            animator.SetBool("AnimIsInvincible", true); //eilaf
+            animator.SetBool("AnimIsInvincible", true); 
     }
 
     private void UpdateInvincibility()
@@ -302,21 +295,13 @@ public class ShadowBoss : MonoBehaviour
         currentState = BossState.Idle;
         
         if (barrier != null)
-        {
             barrier.Deactivate();
-        }
         
         if (arena != null)
-        {
             arena.OnBossInvincibilityEnd();
-        }
         
         if (animator != null)
-        {
-            animator.SetBool("AnimIsInvincible", false); //eilaf
-        }
-        
-
+            animator.SetBool("AnimIsInvincible", false); 
     }
 
     private void UpdatePhase()
@@ -345,10 +330,7 @@ public class ShadowBoss : MonoBehaviour
     private void TransitionToPhase(BossPhase newPhase)
     {
         currentPhase = newPhase;
-        
         int phaseNum = (int)currentPhase + 1;
-        
-
         
         if (arena != null)
         {

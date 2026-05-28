@@ -20,11 +20,20 @@ public class BlobSpewer : MonoBehaviour
     [SerializeField] private Animator anim;
     [SerializeField] private string shootTrigger = "Shoot";
 
+    [Header("=== Audio ===")]
+    [SerializeField] private AudioSource spewerSource;
+    [SerializeField] private AudioClip detectionSound;
+    [SerializeField] private AudioClip fireSound;
+
     private float fireTimer;
+    private bool playerIsDetected = false; // Tracks state so detection sound only plays ONCE
 
     private void Start()
     {
         fireTimer = firstShotDelay;
+
+        // Optimization: Grab animator once at start instead of crushing performance in Update()
+        if (anim == null) anim = GetComponent<Animator>(); 
 
         if (player == null)
         {
@@ -35,19 +44,37 @@ public class BlobSpewer : MonoBehaviour
 
     private void Update()
     {
-        anim = GetComponent<Animator>(); //addedbyEilaf
-
         if (player == null || blobPrefab == null || firePoint == null) return;
 
         float dist = Vector2.Distance(transform.position, player.position);
-        if (dist > detectionRange) return;
+        
+        // Player out of range
+        if (dist > detectionRange) 
+        {
+            playerIsDetected = false; // Reset state when player leaves range
+            return;
+        }
 
-        // optional line ofsight only shoot if nothing is between us
+        // optional line of sight only shoot if nothing is between us
         if (lineOfSightBlockers.value != 0)
         {
             Vector2 dirToPlayer = ((Vector2)player.position - (Vector2)firePoint.position).normalized;
             RaycastHit2D hit = Physics2D.Raycast(firePoint.position, dirToPlayer, dist, lineOfSightBlockers);
-            if (hit.collider != null) return;
+            if (hit.collider != null) 
+            {
+                playerIsDetected = false; // Treat lost sight line as out of range
+                return;
+            }
+        }
+
+        // TRIGGER DETECTION SOUND: Executed exactly once when the player steps into range
+        if (!playerIsDetected)
+        {
+            playerIsDetected = true;
+            if (spewerSource != null && detectionSound != null)
+            {
+                spewerSource.PlayOneShot(detectionSound);
+            }
         }
 
         fireTimer -= Time.deltaTime;
@@ -64,6 +91,12 @@ public class BlobSpewer : MonoBehaviour
 
         EnemyProjectile proj = Instantiate(blobPrefab, firePoint.position, Quaternion.identity);
         proj.Launch(dir, projectileSpeedOverride);
+
+        // TRIGGER FIRING SOUND
+        if (spewerSource != null && fireSound != null)
+        {
+            spewerSource.PlayOneShot(fireSound);
+        }
 
         if (anim != null) anim.SetTrigger(shootTrigger);
     }
