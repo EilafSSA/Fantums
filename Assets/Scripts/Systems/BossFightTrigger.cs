@@ -4,6 +4,8 @@ public class BossFightTrigger : MonoBehaviour
 {
     [Header("=== References ===")]
     [SerializeField] private ShadowBoss boss;
+    [Tooltip("Optional intro cutscene. If assigned, the cinematic plays before the fight starts.")]
+    [SerializeField] private BossIntroCutscene introCutscene;
     
     [Header("=== Arena Lockdown ===")]
     [SerializeField] private GameObject[] activateOnFightStart;
@@ -14,6 +16,7 @@ public class BossFightTrigger : MonoBehaviour
     
     private bool fightActive = false;
     private bool bossDefeated = false;
+    private Transform lastPlayerTransform;
 
     private void Start()
     {
@@ -39,6 +42,7 @@ public class BossFightTrigger : MonoBehaviour
         if (player != null)
         {
             fightActive = true;
+            lastPlayerTransform = player.transform;
             StartCoroutine(StartFightSequence());
         }
     }
@@ -53,6 +57,12 @@ public class BossFightTrigger : MonoBehaviour
         foreach (var obj in deactivateOnFightStart)
         {
             if (obj != null) obj.SetActive(false);
+        }
+
+        // play intro cutscene if assigned (bars, name, camera pan, boss anim)
+        if (introCutscene != null && lastPlayerTransform != null)
+        {
+            yield return introCutscene.Play(lastPlayerTransform);
         }
         
         yield return new WaitForSeconds(startDelay);

@@ -21,6 +21,13 @@ public class CameraFollow : MonoBehaviour
 
     private float shakeTimer;
 
+    // cutscene override
+    private Transform overrideTarget;
+    private float overrideSmooth;
+    private bool isOverriding;
+
+    public Transform Target => target;
+
     private void Awake()
     {
         Instance = this;
@@ -32,19 +39,38 @@ public class CameraFollow : MonoBehaviour
         shakeTimer = shakeDuration;
     }
 
+    /// <summary>Smoothly pan to a different target (used by boss cutscenes etc).</summary>
+    public void FocusOn(Transform focusTarget, float smooth = 0f)
+    {
+        overrideTarget = focusTarget;
+        overrideSmooth = smooth > 0f ? smooth : smoothSpeed;
+        isOverriding = true;
+    }
+
+    /// <summary>Return the camera back to the player.</summary>
+    public void ReturnToPlayer(float smooth = 0f)
+    {
+        overrideTarget = null;
+        overrideSmooth = smooth > 0f ? smooth : smoothSpeed;
+        isOverriding = false;
+    }
+
     private void LateUpdate()
     {
-        if (target == null) return;
+        Transform activeTarget = isOverriding && overrideTarget != null ? overrideTarget : target;
+        if (activeTarget == null) return;
 
-        Vector3 desiredPos = target.position + offset;
+        float activeSmooth = isOverriding ? overrideSmooth : smoothSpeed;
 
-        if (useBounds)
+        Vector3 desiredPos = activeTarget.position + offset;
+
+        if (useBounds && !isOverriding)
         {
             desiredPos.x = Mathf.Clamp(desiredPos.x, minX, maxX);
             desiredPos.y = Mathf.Clamp(desiredPos.y, minY, maxY);
         }
 
-        Vector3 smoothed = Vector3.Lerp(transform.position, desiredPos, smoothSpeed * Time.deltaTime);
+        Vector3 smoothed = Vector3.Lerp(transform.position, desiredPos, activeSmooth * Time.deltaTime);
 
         // apply shake offset on top of normal follow
         if (shakeTimer > 0f)
