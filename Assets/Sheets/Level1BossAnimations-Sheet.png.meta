@@ -1,0 +1,1290 @@
+fileFormatVersion: 2
+guid: 5048f3e9a6f3eb1409aa97a571939873
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3002293015966423840
+    second: Level1BossAnimations-Sheet_0
+  - first:
+      213: -7133464029115844241
+    second: Level1BossAnimations-Sheet_1
+  - first:
+      213: -640123355317877112
+    second: Level1BossAnimations-Sheet_2
+  - first:
+      213: -2257056669538424903
+    second: Level1BossAnimations-Sheet_3
+  - first:
+      213: 1861994493645674007
+    second: Level1BossAnimations-Sheet_4
+  - first:
+      213: -114102383205902846
+    second: Level1BossAnimations-Sheet_5
+  - first:
+      213: -8796781732040369791
+    second: Level1BossAnimations-Sheet_6
+  - first:
+      213: -1405248059067671752
+    second: Level1BossAnimations-Sheet_7
+  - first:
+      213: 362664326857422066
+    second: Level1BossAnimations-Sheet_8
+  - first:
+      213: 8775179425319510801
+    second: Level1BossAnimations-Sheet_9
+  - first:
+      213: -6590704486948524390
+    second: Level1BossAnimations-Sheet_10
+  - first:
+      213: -8445988512163031889
+    second: Level1BossAnimations-Sheet_11
+  - first:
+      213: 4278761433145828615
+    second: Level1BossAnimations-Sheet_12
+  - first:
+      213: 5694059301595945340
+    second: Level1BossAnimations-Sheet_13
+  - first:
+      213: -5516717823823091930
+    second: Level1BossAnimations-Sheet_14
+  - first:
+      213: 1224661853339376713
+    second: Level1BossAnimations-Sheet_15
+  - first:
+      213: 6890734402710308327
+    second: Level1BossAnimations-Sheet_16
+  - first:
+      213: 2909415882029764882
+    second: Level1BossAnimations-Sheet_17
+  - first:
+      213: 1470131654757347603
+    second: Level1BossAnimations-Sheet_18
+  - first:
+      213: -654764926573079721
+    second: Level1BossAnimations-Sheet_19
+  - first:
+      213: -6322510292100015374
+    second: Level1BossAnimations-Sheet_20
+  - first:
+      213: -1168612361380024982
+    second: Level1BossAnimations-Sheet_21
+  - first:
+      213: 6505913182883199080
+    second: Level1BossAnimations-Sheet_22
+  - first:
+      213: -9114425740409708077
+    second: Level1BossAnimations-Sheet_23
+  - first:
+      213: 8627211751772531062
+    second: Level1BossAnimations-Sheet_24
+  - first:
+      213: -3269188715681079145
+    second: Level1BossAnimations-Sheet_25
+  - first:
+      213: 763609049053976179
+    second: Level1BossAnimations-Sheet_26
+  - first:
+      213: -8310580162354800776
+    second: Level1BossAnimations-Sheet_27
+  - first:
+      213: 9163425514456190487
+    second: Level1BossAnimations-Sheet_28
+  - first:
+      213: 1526892951298289431
+    second: Level1BossAnimations-Sheet_29
+  - first:
+      213: -7534489024426641656
+    second: Level1BossAnimations-Sheet_30
+  - first:
+      213: -5073011551018330167
+    second: Level1BossAnimations-Sheet_31
+  - first:
+      213: 363132706957467068
+    second: Level1BossAnimations-Sheet_32
+  - first:
+      213: -7371104829139678971
+    second: Level1BossAnimations-Sheet_33
+  - first:
+      213: -5707958907312501930
+    second: Level1BossAnimations-Sheet_34
+  - first:
+      213: 2403883036081846303
+    second: Level1BossAnimations-Sheet_35
+  - first:
+      213: 5868231782230403575
+    second: Level1BossAnimations-Sheet_36
+  - first:
+      213: -5460846773293065042
+    second: Level1BossAnimations-Sheet_37
+  - first:
+      213: 7113396725127048560
+    second: Level1BossAnimations-Sheet_38
+  - first:
+      213: -8308852491280821285
+    second: Level1BossAnimations-Sheet_39
+  - first:
+      213: -525579131629975958
+    second: Level1BossAnimations-Sheet_40
+  - first:
+      213: -5296095596333281850
+    second: Level1BossAnimations-Sheet_41
+  - first:
+      213: -6640120914034307123
+    second: Level1BossAnimations-Sheet_42
+  - first:
+      213: 7928570427716469632
+    second: Level1BossAnimations-Sheet_43
+  - first:
+      213: 7630902477414835941
+    second: Level1BossAnimations-Sheet_44
+  - first:
+      213: -2118201607282012615
+    second: Level1BossAnimations-Sheet_45
+  - first:
+      213: 5329128441829430173
+    second: Level1BossAnimations-Sheet_46
+  - first:
+      213: 5645951137656832233
+    second: Level1BossAnimations-Sheet_47
+  - first:
+      213: -6654170317113406645
+    second: Level1BossAnimations-Sheet_48
+  - first:
+      213: 2763216288065717368
+    second: Level1BossAnimations-Sheet_49
+  - first:
+      213: 8155821275558017039
+    second: Level1BossAnimations-Sheet_50
+  - first:
+      213: 6044894341202772149
+    second: Level1BossAnimations-Sheet_51
+  - first:
+      213: 4853006278042742489
+    second: Level1BossAnimations-Sheet_52
+  - first:
+      213: 7766125881567588310
+    second: Level1BossAnimations-Sheet_53
+  - first:
+      213: 1994021081217677733
+    second: Level1BossAnimations-Sheet_54
+  - first:
+      213: -5158793522476665211
+    second: Level1BossAnimations-Sheet_55
+  - first:
+      213: 9188783294295969958
+    second: Level1BossAnimations-Sheet_56
+  - first:
+      213: -2911361614684115220
+    second: Level1BossAnimations-Sheet_57
+  - first:
+      213: -6318032153990851452
+    second: Level1BossAnimations-Sheet_58
+  - first:
+      213: 1720432861775108975
+    second: Level1BossAnimations-Sheet_59
+  - first:
+      213: 3775323873641982879
+    second: Level1BossAnimations-Sheet_60
+  - first:
+      213: 1879558179615426827
+    second: Level1BossAnimations-Sheet_61
+  - first:
+      213: 8840438791106989831
+    second: Level1BossAnimations-Sheet_62
+  - first:
+      213: -2937800977998362789
+    second: Level1BossAnimations-Sheet_63
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5400
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e46fa7a866b556d0800000000000000
+      internalID: -3002293015966423840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 5400
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f69f58e9248d00d90800000000000000
+      internalID: -7133464029115844241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 1320
+        y: 5400
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 886c8d92333dd17f0800000000000000
+      internalID: -640123355317877112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 1980
+        y: 5400
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b76c3edae25da0e0800000000000000
+      internalID: -2257056669538424903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 5400
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 716db7f602227d910800000000000000
+      internalID: 1861994493645674007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 3300
+        y: 5400
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2069cfcac70aa6ef0800000000000000
+      internalID: -114102383205902846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 5400
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 189961f3f9d8be580800000000000000
+      internalID: -8796781732040369791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4320
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83bd6f9e55e8f7ce0800000000000000
+      internalID: -1405248059067671752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 4320
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f4fa07a841780500800000000000000
+      internalID: 362664326857422066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 1320
+        y: 4320
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1136c76c133b7c970800000000000000
+      internalID: 8775179425319510801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 1980
+        y: 4320
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9e2cdb203d1984a0800000000000000
+      internalID: -6590704486948524390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 4320
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa41e7b6232d9ca80800000000000000
+      internalID: -8445988512163031889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 3300
+        y: 4320
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7056c458ad6316b30800000000000000
+      internalID: 4278761433145828615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 4320
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7992a134cc550f40800000000000000
+      internalID: 5694059301595945340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3240
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62765f83e5ea073b0800000000000000
+      internalID: -5516717823823091930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 3240
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94cd342977fdef010800000000000000
+      internalID: 1224661853339376713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 1320
+        y: 3240
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e58c1b3e6ec0af50800000000000000
+      internalID: 6890734402710308327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 1980
+        y: 3240
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21193487452506820800000000000000
+      internalID: 2909415882029764882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 3240
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3117ede63f4f66410800000000000000
+      internalID: 1470131654757347603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 3300
+        y: 3240
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7531a34b4cec9e6f0800000000000000
+      internalID: -654764926573079721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 3240
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fa90ae236ee148a0800000000000000
+      internalID: -6322510292100015374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2160
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6d20d7bf3148cfe0800000000000000
+      internalID: -1168612361380024982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 2160
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 868b84de195a94a50800000000000000
+      internalID: 6505913182883199080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 1320
+        y: 2160
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d1e333541e038180800000000000000
+      internalID: -9114425740409708077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 1980
+        y: 2160
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6792a7a11630ab770800000000000000
+      internalID: 8627211751772531062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 2160
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7902d1a1f2281a2d0800000000000000
+      internalID: -3269188715681079145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 3300
+        y: 2160
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 376d2246262e89a00800000000000000
+      internalID: 763609049053976179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_27
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 2160
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8771f69af53eaac80800000000000000
+      internalID: -8310580162354800776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_28
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1080
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71e89ea94f60b2f70800000000000000
+      internalID: 9163425514456190487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_29
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 1080
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71fae24ac0d903510800000000000000
+      internalID: 1526892951298289431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_30
+      rect:
+        serializedVersion: 2
+        x: 1320
+        y: 1080
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80778f6d62e107790800000000000000
+      internalID: -7534489024426641656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_31
+      rect:
+        serializedVersion: 2
+        x: 1980
+        y: 1080
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c759105fda0999b0800000000000000
+      internalID: -5073011551018330167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_32
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 1080
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbd9684e54b1a0500800000000000000
+      internalID: 363132706957467068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_33
+      rect:
+        serializedVersion: 2
+        x: 3300
+        y: 1080
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50986f0363394b990800000000000000
+      internalID: -7371104829139678971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_34
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 1080
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65b8c19ad9149c0b0800000000000000
+      internalID: -5707958907312501930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_35
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f18fe3f82ee4c5120800000000000000
+      internalID: 2403883036081846303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_36
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 0
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f92087f6b5207150800000000000000
+      internalID: 5868231782230403575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_37
+      rect:
+        serializedVersion: 2
+        x: 1320
+        y: 0
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eac5701eacc2734b0800000000000000
+      internalID: -5460846773293065042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_38
+      rect:
+        serializedVersion: 2
+        x: 1980
+        y: 0
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07def9312acd7b260800000000000000
+      internalID: 7113396725127048560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_39
+      rect:
+        serializedVersion: 2
+        x: 2640
+        y: 0
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd3561e6ea601bc80800000000000000
+      internalID: -8308852491280821285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_40
+      rect:
+        serializedVersion: 2
+        x: 3300
+        y: 0
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6646dd7094c4b8f0800000000000000
+      internalID: -525579131629975958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Level1BossAnimations-Sheet_41
+      rect:
+        serializedVersion: 2
+        x: 3960
+        y: 0
+        width: 660
+        height: 1080
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cd4b047d1d7086b0800000000000000
+      internalID: -5296095596333281850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 73a4690b816e9c644b9a871542d3a01e
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":660.0,"y":1080.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Level1BossAnimations-Sheet_0: -3002293015966423840
+      Level1BossAnimations-Sheet_1: -7133464029115844241
+      Level1BossAnimations-Sheet_10: -6590704486948524390
+      Level1BossAnimations-Sheet_11: -8445988512163031889
+      Level1BossAnimations-Sheet_12: 4278761433145828615
+      Level1BossAnimations-Sheet_13: 5694059301595945340
+      Level1BossAnimations-Sheet_14: -5516717823823091930
+      Level1BossAnimations-Sheet_15: 1224661853339376713
+      Level1BossAnimations-Sheet_16: 6890734402710308327
+      Level1BossAnimations-Sheet_17: 2909415882029764882
+      Level1BossAnimations-Sheet_18: 1470131654757347603
+      Level1BossAnimations-Sheet_19: -654764926573079721
+      Level1BossAnimations-Sheet_2: -640123355317877112
+      Level1BossAnimations-Sheet_20: -6322510292100015374
+      Level1BossAnimations-Sheet_21: -1168612361380024982
+      Level1BossAnimations-Sheet_22: 6505913182883199080
+      Level1BossAnimations-Sheet_23: -9114425740409708077
+      Level1BossAnimations-Sheet_24: 8627211751772531062
+      Level1BossAnimations-Sheet_25: -3269188715681079145
+      Level1BossAnimations-Sheet_26: 763609049053976179
+      Level1BossAnimations-Sheet_27: -8310580162354800776
+      Level1BossAnimations-Sheet_28: 9163425514456190487
+      Level1BossAnimations-Sheet_29: 1526892951298289431
+      Level1BossAnimations-Sheet_3: -2257056669538424903
+      Level1BossAnimations-Sheet_30: -7534489024426641656
+      Level1BossAnimations-Sheet_31: -5073011551018330167
+      Level1BossAnimations-Sheet_32: 363132706957467068
+      Level1BossAnimations-Sheet_33: -7371104829139678971
+      Level1BossAnimations-Sheet_34: -5707958907312501930
+      Level1BossAnimations-Sheet_35: 2403883036081846303
+      Level1BossAnimations-Sheet_36: 5868231782230403575
+      Level1BossAnimations-Sheet_37: -5460846773293065042
+      Level1BossAnimations-Sheet_38: 7113396725127048560
+      Level1BossAnimations-Sheet_39: -8308852491280821285
+      Level1BossAnimations-Sheet_4: 1861994493645674007
+      Level1BossAnimations-Sheet_40: -525579131629975958
+      Level1BossAnimations-Sheet_41: -5296095596333281850
+      Level1BossAnimations-Sheet_5: -114102383205902846
+      Level1BossAnimations-Sheet_6: -8796781732040369791
+      Level1BossAnimations-Sheet_7: -1405248059067671752
+      Level1BossAnimations-Sheet_8: 362664326857422066
+      Level1BossAnimations-Sheet_9: 8775179425319510801
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

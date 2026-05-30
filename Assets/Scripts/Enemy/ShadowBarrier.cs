@@ -13,12 +13,14 @@ public class ShadowBarrier : MonoBehaviour
     [SerializeField] private float pulseAmount = 0.2f;
     [SerializeField] private float pulseSpeed = 2f;
     
+    
     [Header("=== Visual ===")]
     [SerializeField] private Color barrierColor = new Color(0.5f, 0f, 0.8f, 1f);
     
     private enum BarrierState { Inactive, Forming, Active, Dissolving }
     private BarrierState state = BarrierState.Inactive;
     
+    private Animator anim; //addedbyEilaf
     private GameObject[] barrierArms;
     private SpriteRenderer[] armRenderers;
     private float formProgress = 0f;
@@ -71,6 +73,8 @@ public class ShadowBarrier : MonoBehaviour
             sr.color = barrierColor;
             sr.sortingOrder = 100;
             arm.transform.localScale = new Vector3(0.4f, 2f, 1f);
+
+            
             
             arm.SetActive(false);
             barrierArms[i] = arm;

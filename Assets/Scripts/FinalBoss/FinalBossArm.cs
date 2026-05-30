@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class FinalBossArm : MonoBehaviour
 {
+    //ADDED BY EILAF:
+    [Header("=== Reference ===")]
+    [SerializeField] public FinalBossMainBody mainbody;
+
     [Header("=== Health ===")]
     [SerializeField] private int maxHealth = 4;
     private int currentHealth;
@@ -27,6 +31,7 @@ public class FinalBossArm : MonoBehaviour
     public bool IsDead => currentHealth <= 0;
     public bool IsAttacking => isAttacking;
     
+    private Animator anim; //addedbyEilaf
     private Vector3 idleBasePosition;
     private Vector3 initialScale;
     private bool isAttacking = false;
@@ -38,11 +43,15 @@ public class FinalBossArm : MonoBehaviour
 
     private void Awake()
     {
+        anim = GetComponent<Animator>(); //addedbyEilaf
         currentHealth = maxHealth;
         initialScale = transform.localScale;
         if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null) spriteRenderer.color = idleColor;
     }
+
+    //anim.SetBool("IsClinging", false);
+    //anim.SetTrigger("Jump");
 
     public void ResetArm()
     {
@@ -82,6 +91,7 @@ public class FinalBossArm : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
+        mainbody.bodyHurt(); //addedbyEilaf
         if (IsDead) return;
 
         if (!isAttacking) return;
@@ -173,22 +183,27 @@ public class FinalBossArm : MonoBehaviour
 
     private IEnumerator SweepAttackRoutine(float startX, float endX, float yLevel, Color telegraphColor, float duration)
     {
+        anim.SetTrigger("start"); //addedbyEilaf
+
         isAttacking = true;
         hasBeenHitThisAttack = false;
         isReturning = false;
         transform.localScale = initialScale;
         if (spriteRenderer != null) spriteRenderer.color = telegraphColor;
 
+        anim.SetTrigger("startSweep"); //addedbyEilaf
         Vector3 startPos = new Vector3(startX, yLevel, 0f);
-        yield return MoveTo(startPos, 0.5f);
-
+        yield return MoveTo(startPos, 2f);
+        
         yield return new WaitForSeconds(0.5f);
+        anim.SetTrigger("Sweep"); //addedbyEilaf
 
         Vector3 endPos = new Vector3(endX, yLevel, 0f);
         yield return MoveTo(endPos, duration);
 
         yield return new WaitForSeconds(0.2f);
-
+        anim.SetTrigger("idle"); //addedbyEilaf
+        
         isReturning = true;
 
         if (spriteRenderer != null) spriteRenderer.color = idleColor;
@@ -200,21 +215,27 @@ public class FinalBossArm : MonoBehaviour
 
     private IEnumerator SmashAttackRoutine(float targetX, float startY, float floorY, Color telegraphColor, float duration)
     {
+        anim.SetTrigger("start"); //addedbyEilaf
+
         isAttacking = true;
         hasBeenHitThisAttack = false;
         isReturning = false;
         transform.localScale = initialScale;
         if (spriteRenderer != null) spriteRenderer.color = telegraphColor;
 
+        anim.SetTrigger("Smash"); //addedbyEilaf
         Vector3 hoverPos = new Vector3(targetX, startY, 0f);
         yield return MoveTo(hoverPos, 0.5f);
 
         yield return new WaitForSeconds(0.5f);
 
+
         Vector3 floorPos = new Vector3(targetX, floorY, 0f);
         yield return MoveTo(floorPos, 0.15f);
 
         yield return new WaitForSeconds(0.5f);
+
+        anim.SetTrigger("idle"); //addedbyEilaf
 
         isReturning = true;
 

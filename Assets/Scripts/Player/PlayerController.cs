@@ -360,4 +360,14 @@ public class PlayerController : MonoBehaviour
             Gizmos.DrawWireSphere(attackPoint.position, attackRange);
         }
     }
+
+    public void Ending()
+    {
+        transform.Translate(83f, 24.1f, 0f);
+        transform.Translate(86.4f, 24.2f, 0f);
+        transform.Translate(86.4f, 24.67f, 0f);
+        transform.Translate(127.26f, 65.55f, 0f);
+        transform.Translate(143.55f, 81.69f, 0f);
+        transform.Translate(151.67f, 81.69f, 0f);
+    }
 }

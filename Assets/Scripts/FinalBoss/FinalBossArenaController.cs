@@ -2,6 +2,10 @@ using System.Collections;
 using UnityEngine;
 public class FinalBossArenaController : MonoBehaviour
 {
+    //ADDED BY EILAF:
+    [Header("=== Reference ===")]
+    [SerializeField] public FinalBossMainBody mainbody;
+
     [Header("=== Boss ===")]
     [SerializeField] private Transform boss;
     [SerializeField] private BossIntroCutscene introCutscene;
@@ -22,8 +26,8 @@ public class FinalBossArenaController : MonoBehaviour
     [SerializeField] private float dualSweepDuration = 1.5f;
 
     [Header("=== Death Animation ===")]
-    [SerializeField] private float deathShakeDuration = 1.5f;
-    [SerializeField] private float deathFadeDuration = 1f;
+    //[SerializeField] private float deathShakeDuration = 1.5f;
+    //[SerializeField] private float deathFadeDuration = 1f;
     [SerializeField] private Color deathColor = Color.red;
 
     [Header("=== Arena Bounds ===")]
@@ -32,6 +36,7 @@ public class FinalBossArenaController : MonoBehaviour
     [SerializeField] private float arenaBottomY = 0f;
     [SerializeField] private float arenaTopY = 40f;
 
+    private Animator anim; //addedbyEilaf
     private Camera mainCam;
     private bool fightActive = false;
     private bool bossDefeated = false;
@@ -41,6 +46,7 @@ public class FinalBossArenaController : MonoBehaviour
 
     private void Start()
     {
+        anim = GetComponent<Animator>(); //addedbyEilaf
         mainCam = Camera.main;
 
         if (leftArm != null) leftArm.OnDeath += OnArmDied;
@@ -129,9 +135,9 @@ public class FinalBossArenaController : MonoBehaviour
         if (mainCam == null || boss == null || !fightActive) return;
 
         if (leftArm != null && !leftArm.IsDead)
-            leftArm.SetIdlePosition(boss.position + new Vector3(-2.2f, 1.5f, 0f));
+            leftArm.SetIdlePosition(boss.position + new Vector3(0.5f, -2.3f, 0f));
         if (rightArm != null && !rightArm.IsDead)
-            rightArm.SetIdlePosition(boss.position + new Vector3(-2.2f, -1.5f, 0f));
+            rightArm.SetIdlePosition(boss.position + new Vector3(-3.5f, -2.3f, 0f));
 
         if (!introFinished) return;
 
@@ -195,9 +201,9 @@ public class FinalBossArenaController : MonoBehaviour
             }
             else if (attackType == 3)
             {
+                
                 if (!leftArm.IsDead && !rightArm.IsDead)
                 {
-
                     float meetX = lastPlayer != null ? lastPlayer.position.x : arenaCenterX;
                     leftArm.DoAttack3(arenaLeft, meetX - 1f, sweepY, dualSweepDuration);
                     rightArm.DoAttack3(arenaRight, meetX + 1f, sweepY, dualSweepDuration);
@@ -218,6 +224,7 @@ public class FinalBossArenaController : MonoBehaviour
 
     private void OnArmDied(FinalBossArm arm)
     {
+        anim.SetTrigger("Hurt");
         if (leftArm.IsDead && rightArm.IsDead)
         {
             bossDefeated = true;
@@ -241,49 +248,15 @@ public class FinalBossArenaController : MonoBehaviour
             Vector3 basePos = boss.position;
 
             float elapsed = 0f;
-            while (elapsed < deathShakeDuration)
-            {
-                elapsed += Time.deltaTime;
 
-                Vector3 shakeOffset = (Vector3)Random.insideUnitCircle * 0.2f;
-                boss.position = basePos + shakeOffset;
-
-                if (bossSr != null)
-                {
-                    float flashVal = Mathf.PingPong(Time.time * 15f, 1f);
-                    bossSr.color = Color.Lerp(originalColor, deathColor, flashVal);
-                }
-
-                yield return null;
-            }
+            yield return new WaitForSeconds(0.5f);
+            mainbody.bodyDeath();
 
             boss.position = basePos;
 
+            yield return new WaitForSeconds(2f);
             elapsed = 0f;
-            while (elapsed < deathFadeDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsed / deathFadeDuration);
-
-                boss.localScale = Vector3.Lerp(originalScale, Vector3.zero, t);
-
-                boss.Rotate(Vector3.forward, 360f * Time.deltaTime * 2f);
-
-                if (bossSr != null)
-                {
-                    Color col = bossSr.color;
-                    col.a = 1f - t;
-                    bossSr.color = col;
-                }
-
-                yield return null;
-            }
-
             boss.gameObject.SetActive(false);
-
-            boss.localScale = originalScale;
-            if (bossSr != null) bossSr.color = originalColor;
-            boss.rotation = Quaternion.identity;
         }
 
         yield return null;
