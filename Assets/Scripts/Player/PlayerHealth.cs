@@ -50,6 +50,11 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    public void Heal(int amount)
+    {
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+    }
+
     public void TakeDamage(int damage)
     {
         if (isInvincible) return;

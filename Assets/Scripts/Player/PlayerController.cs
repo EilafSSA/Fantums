@@ -61,6 +61,8 @@ public class PlayerController : MonoBehaviour
 
     private Transform currentClingTarget;
 
+    private bool isEndingCutscene = false;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -106,6 +108,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (isEndingCutscene) return;
+
         // don't process input while dashing (we can remove this later if we want anim-cancel or diractiloanl dash idk but good to know)
         if (isDashing) return;
 
@@ -214,6 +218,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isEndingCutscene) return;
+
         if (isDashing)
         {
             rb.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f);
@@ -361,13 +367,83 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Ending()
+    public void StartEndingCutscene(System.Collections.Generic.List<EndingWaypoint> waypoints)
     {
-        transform.Translate(83f, 24.1f, 0f);
-        transform.Translate(86.4f, 24.2f, 0f);
-        transform.Translate(86.4f, 24.67f, 0f);
-        transform.Translate(127.26f, 65.55f, 0f);
-        transform.Translate(143.55f, 81.69f, 0f);
-        transform.Translate(151.67f, 81.69f, 0f);
+        if (isEndingCutscene) return;
+        StartCoroutine(EndingRoutine(waypoints));
     }
+
+    private System.Collections.IEnumerator EndingRoutine(System.Collections.Generic.List<EndingWaypoint> waypoints)
+    {
+        isEndingCutscene = true;
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.gravityScale = 0f;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
+
+        if (anim != null)
+        {
+            anim.SetBool("IsGrounded", true);
+            anim.SetBool("IsClinging", false);
+            anim.SetInteger("ComboStep", 0);
+        }
+
+        for (int i = 0; i < waypoints.Count; i++)
+        {
+            EndingWaypoint wp = waypoints[i];
+            Vector3 startPos = transform.position;
+            Vector3 targetPos = new Vector3(wp.position.x, wp.position.y, transform.position.z);
+
+            float direction = targetPos.x - startPos.x;
+            if (Mathf.Abs(direction) > 0.01f)
+            {
+                if (direction > 0 && !facingRight) Flip();
+                else if (direction < 0 && facingRight) Flip();
+            }
+
+            if (anim != null)
+            {
+                anim.SetBool("IsRunning", wp.playRunningAnim);
+            }
+
+            float distance = Vector3.Distance(startPos, targetPos);
+            if (distance > 0.01f && wp.speed > 0f)
+            {
+                float duration = distance / wp.speed;
+                float elapsed = 0f;
+                while (elapsed < duration)
+                {
+                    elapsed += Time.deltaTime;
+                    float t = Mathf.Clamp01(elapsed / duration);
+                    transform.position = Vector3.Lerp(startPos, targetPos, t);
+                    yield return null;
+                }
+            }
+
+            transform.position = targetPos;
+
+            if (anim != null)
+            {
+                anim.SetBool("IsRunning", false);
+            }
+
+            if (wp.pauseDuration > 0f)
+            {
+                yield return new WaitForSeconds(wp.pauseDuration);
+            }
+        }
+    }
+}
+
+[System.Serializable]
+public class EndingWaypoint
+{
+    public string waypointName;
+    public Vector2 position;
+    public float speed = 5f;
+    public float pauseDuration = 0f;
+    public bool playRunningAnim = true;
 }

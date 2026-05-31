@@ -16,6 +16,8 @@ public class ShadowBarrier : MonoBehaviour
     
     [Header("=== Visual ===")]
     [SerializeField] private Color barrierColor = new Color(0.5f, 0f, 0.8f, 1f);
+    [SerializeField] private Sprite barrierSprite;
+    [SerializeField] private RuntimeAnimatorController barrierAnimator;
     
     private enum BarrierState { Inactive, Forming, Active, Dissolving }
     private BarrierState state = BarrierState.Inactive;
@@ -69,9 +71,16 @@ public class ShadowBarrier : MonoBehaviour
             arm.transform.localPosition = Vector3.zero;
             
             SpriteRenderer sr = arm.AddComponent<SpriteRenderer>();
-            sr.sprite = defaultSprite;
+            sr.sprite = barrierSprite != null ? barrierSprite : defaultSprite;
             sr.color = barrierColor;
             sr.sortingOrder = 100;
+            
+            if (barrierAnimator != null)
+            {
+                Animator animator = arm.AddComponent<Animator>();
+                animator.runtimeAnimatorController = barrierAnimator;
+            }
+
             arm.transform.localScale = new Vector3(0.4f, 2f, 1f);
 
             
