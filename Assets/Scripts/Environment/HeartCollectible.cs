@@ -1,9 +1,16 @@
+
 using UnityEngine;
 
 public class HeartCollectible : MonoBehaviour
 {
     [SerializeField] private int healAmount = 1;
     [SerializeField] private float pickupRadius = 1.5f;
+    private Animator anim; //addedbyEilaf
+    
+    private void Awake()
+    {
+        anim = GetComponent<Animator>(); //addedbyEilaf
+    }
 
     private void Update()
     {
@@ -17,6 +24,7 @@ public class HeartCollectible : MonoBehaviour
             }
         }
     }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -52,6 +60,7 @@ public class HeartCollectible : MonoBehaviour
                 health = pc.GetComponent<PlayerHealth>();
             }
         }
+        
 
         if (health == null)
         {
@@ -65,7 +74,10 @@ public class HeartCollectible : MonoBehaviour
         if (health != null && health.GetCurrentHealth() < health.GetMaxHealth())
         {
             health.Heal(healAmount);
-            Destroy(gameObject);
+
+            anim.SetTrigger("Sway");
+
+            Destroy(gameObject, 1f);
         }
     }
 }

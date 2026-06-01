@@ -5,6 +5,9 @@ TextureImporter:
   - first:
       213: 2366910586959892741
     second: EndingPortrait_FG_0
+  - first:
+      213: 5448350764349095618
+    second: EndingPortrait_FG_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -117,6 +120,28 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
+        y: 752
+        width: 121
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5011bde63a4f8d020800000000000000
+      internalID: 2366910586959892741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EndingPortrait_FG_1
+      rect:
+        serializedVersion: 2
+        x: 0
         y: 0
         width: 1920
         height: 751
@@ -128,8 +153,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5011bde63a4f8d020800000000000000
-      internalID: 2366910586959892741
+      spriteID: 2ce71c0572e6c9b40800000000000000
+      internalID: 5448350764349095618
       vertices: []
       indices: 
       edges: []
@@ -149,6 +174,7 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       EndingPortrait_FG_0: 2366910586959892741
+      EndingPortrait_FG_1: 5448350764349095618
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

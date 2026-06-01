@@ -20,6 +20,7 @@ public class PlayerHealth : MonoBehaviour
     private void Awake()
     {
         currentHealth = maxHealth;
+        anim = GetComponent<Animator>(); //addedbyEilaf
         sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
 
@@ -57,6 +58,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        anim.SetTrigger("Hurt");
         if (isInvincible) return;
 
         currentHealth -= damage;
@@ -83,6 +85,9 @@ public class PlayerHealth : MonoBehaviour
     private System.Collections.IEnumerator RespawnRoutine()
     {
         isInvincible = true;
+        anim.SetTrigger("Death"); //addedbyEilaf
+        yield return new WaitForSeconds(0.6f);
+
 
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
@@ -90,13 +95,16 @@ public class PlayerHealth : MonoBehaviour
         if (sr != null)
             sr.enabled = false;
 
+
         yield return new WaitForSeconds(respawnDelay);
+        
 
         Vector3 respawnPos = GameManager.Instance != null
             ? GameManager.Instance.GetRespawnPosition()
             : new Vector3(-8f, -2.5f, 0f);
 
         transform.position = respawnPos;
+        anim.SetTrigger("Respawned");
 
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
@@ -108,8 +116,9 @@ public class PlayerHealth : MonoBehaviour
             sr.enabled = true;
             sr.color = originalColor;
         }
-
+        
         invincibilityTimer = invincibilityTime;
+        
     }
 
     public int GetCurrentHealth() => currentHealth;

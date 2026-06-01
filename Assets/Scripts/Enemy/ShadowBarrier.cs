@@ -81,7 +81,7 @@ public class ShadowBarrier : MonoBehaviour
                 animator.runtimeAnimatorController = barrierAnimator;
             }
 
-            arm.transform.localScale = new Vector3(0.4f, 2f, 1f);
+            arm.transform.localScale = new Vector3(1f, -1f, 1f);
 
             
             
@@ -98,7 +98,7 @@ public class ShadowBarrier : MonoBehaviour
         for (int i = 0; i < 16; i++) colors[i] = Color.white;
         tex.SetPixels(colors);
         tex.Apply();
-        return Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 4f);
+        return Sprite.Create(tex, new Rect(0, 0, 0, 0), new Vector2(1f, -1f), 4f);
     }
 
     public void Initialize(Transform boss)
@@ -120,7 +120,7 @@ public class ShadowBarrier : MonoBehaviour
             if (barrierArms[i] != null)
             {
                 barrierArms[i].SetActive(true);
-                barrierArms[i].transform.localScale = Vector3.zero;
+                //barrierArms[i].transform.localScale = Vector3.zero;
             }
         }
         
@@ -144,7 +144,7 @@ public class ShadowBarrier : MonoBehaviour
         {
             if (barrierArms[i] != null)
             {
-                barrierArms[i].transform.localScale = new Vector3(0.4f * scale, 2f * scale, 1f);
+                //barrierArms[i].transform.localScale = new Vector3(0.4f * scale, 2f * scale, 1f);
             }
         }
         
@@ -168,13 +168,13 @@ public class ShadowBarrier : MonoBehaviour
         formProgress -= Time.deltaTime * dissolveSpeed;
         formProgress = Mathf.Clamp01(formProgress);
         
-        float scale = Mathf.SmoothStep(0f, 1f, formProgress);
+        //float scale = Mathf.SmoothStep(0f, 1f, formProgress);
         
         for (int i = 0; i < barrierArms.Length; i++)
         {
             if (barrierArms[i] != null)
             {
-                barrierArms[i].transform.localScale = new Vector3(0.4f * scale, 2f * scale, 1f);
+                //barrierArms[i].transform.localScale = new Vector3(0.4f * scale, 2f * scale, 1f);
                 
                 if (armRenderers[i] != null)
                 {

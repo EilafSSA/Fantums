@@ -161,12 +161,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 254
-        width: 107
-        height: 92
+        x: 0
+        y: 240
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -183,12 +183,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_1
       rect:
         serializedVersion: 2
-        x: 127
-        y: 246
-        width: 107
-        height: 100
+        x: 120
+        y: 240
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -205,12 +205,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_2
       rect:
         serializedVersion: 2
-        x: 247
-        y: 246
-        width: 107
-        height: 92
+        x: 240
+        y: 240
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -227,12 +227,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_3
       rect:
         serializedVersion: 2
-        x: 374
-        y: 254
-        width: 92
-        height: 92
+        x: 360
+        y: 240
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -249,12 +249,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_4
       rect:
         serializedVersion: 2
-        x: 22
-        y: 134
-        width: 77
-        height: 92
+        x: 0
+        y: 120
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -271,12 +271,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_5
       rect:
         serializedVersion: 2
-        x: 149
-        y: 134
-        width: 62
-        height: 92
+        x: 120
+        y: 120
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -293,12 +293,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_6
       rect:
         serializedVersion: 2
-        x: 277
-        y: 134
-        width: 47
-        height: 92
+        x: 240
+        y: 120
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -315,12 +315,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_7
       rect:
         serializedVersion: 2
-        x: 367
-        y: 149
-        width: 113
-        height: 84
+        x: 360
+        y: 120
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -337,12 +337,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_8
       rect:
         serializedVersion: 2
-        x: 14
-        y: 36
-        width: 85
-        height: 77
+        x: 0
+        y: 0
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -359,12 +359,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_9
       rect:
         serializedVersion: 2
-        x: 104
-        y: 111
-        width: 10
-        height: 10
+        x: 120
+        y: 0
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -381,12 +381,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_10
       rect:
         serializedVersion: 2
-        x: 142
-        y: 104
-        width: 9
-        height: 9
+        x: 240
+        y: 0
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -403,12 +403,12 @@ TextureImporter:
       name: HeartConsumable-Sheet_11
       rect:
         serializedVersion: 2
-        x: 149
-        y: 36
-        width: 62
-        height: 85
+        x: 360
+        y: 0
+        width: 120
+        height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -421,99 +421,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: HeartConsumable-Sheet_12
-      rect:
-        serializedVersion: 2
-        x: 277
-        y: 51
-        width: 47
-        height: 62
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: efe6f312367b615c0800000000000000
-      internalID: -4245003962362663170
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: HeartConsumable-Sheet_13
-      rect:
-        serializedVersion: 2
-        x: 404
-        y: 81
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5f12c1bac04fe1da0800000000000000
-      internalID: -5972067720599166475
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: HeartConsumable-Sheet_14
-      rect:
-        serializedVersion: 2
-        x: 112
-        y: 59
-        width: 9
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f672c9c20909fffb0800000000000000
-      internalID: -4611808544505976977
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: HeartConsumable-Sheet_15
-      rect:
-        serializedVersion: 2
-        x: 419
-        y: 59
-        width: 10
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1fe98a9f398de0d90800000000000000
-      internalID: -7129523030020546831
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: a5d25952a260eb9459f68ca1e8383127
     internalID: 0
     vertices: []
     indices: 
@@ -521,16 +433,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":120.0,"y":120.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       HeartConsumable-Sheet_0: 5102659368373642151
       HeartConsumable-Sheet_1: 842389731022118627
       HeartConsumable-Sheet_10: -1432462508919919328
       HeartConsumable-Sheet_11: 8228807416594248139
-      HeartConsumable-Sheet_12: -4245003962362663170
-      HeartConsumable-Sheet_13: -5972067720599166475
-      HeartConsumable-Sheet_14: -4611808544505976977
-      HeartConsumable-Sheet_15: -7129523030020546831
       HeartConsumable-Sheet_2: 8803083989993568411
       HeartConsumable-Sheet_3: 8846492501071499103
       HeartConsumable-Sheet_4: -682625582732396060
