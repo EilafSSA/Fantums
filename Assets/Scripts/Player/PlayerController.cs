@@ -38,6 +38,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip dashSound;
     [SerializeField] private AudioClip attackSound;
     [SerializeField] private AudioClip clingSound;
+    
+    [Header("=== Gamepad ===")]
+    [SerializeField] private float gamepadStickDeadzone = 0.25f;
+    [SerializeField] private float gamepadTriggerThreshold = 0.5f;
 
     private Animator anim; //addedbyEilaf
     private Rigidbody2D rb;
@@ -46,6 +50,11 @@ public class PlayerController : MonoBehaviour
     private bool isClinging;
     private bool facingRight = true;
     private float attackTimer;
+
+    private bool prevAttackHeld;
+    private bool prevDashHeld;
+    private bool prevClingHeld;
+    private bool prevJumpHeld;
 
     // combo tracking
     private int comboStep = 0;
@@ -59,18 +68,76 @@ public class PlayerController : MonoBehaviour
 
     private Transform currentClingTarget;
 
+    private bool isEndingCutscene = false;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>(); //addedbyEilaf - moved here so it only runs once instead of every frame
     }
 
+    private float ReadMoveAxis()
+    {
+        float kb = Input.GetAxisRaw("Horizontal");
+        if (Mathf.Abs(kb) < gamepadStickDeadzone) kb = 0f;
+        return Mathf.Clamp(kb, -1f, 1f);
+    }
+
+    private bool JumpHeld()
+    {
+        return Input.GetButton("Jump") || Input.GetKey(KeyCode.JoystickButton0);
+    }
+
+    private bool AttackHeld()
+    {
+        if (Input.GetMouseButton(0)) return true;
+        if (Input.GetKey(KeyCode.JoystickButton2)) return true;
+        return false;
+    }
+
+    private bool DashHeld()
+    {
+        if (Input.GetKey(KeyCode.LeftShift)) return true;
+        if (Input.GetKey(KeyCode.JoystickButton1)) return true;
+        if (Input.GetKey(KeyCode.JoystickButton4)) return true;
+        return false;
+    }
+
+    private bool ClingHeld()
+    {
+        if (Input.GetMouseButton(1)) return true;
+        if (Input.GetKey(KeyCode.JoystickButton5)) return true;
+        float rt = 0f;
+        try { rt = Input.GetAxisRaw("RightTrigger"); } catch { }
+        if (rt > gamepadTriggerThreshold) return true;
+        return false;
+    }
+
     private void Update()
     {
+        if (isEndingCutscene) return;
+
         // don't process input while dashing (we can remove this later if we want anim-cancel or diractiloanl dash idk but good to know)
         if (isDashing) return;
 
-        moveInput = Input.GetAxisRaw("Horizontal");
+        moveInput = ReadMoveAxis();
+
+        bool jumpHeld = JumpHeld();
+        bool jumpDown = jumpHeld && !prevJumpHeld;
+        prevJumpHeld = jumpHeld;
+
+        bool attackHeld = AttackHeld();
+        bool attackDown = attackHeld && !prevAttackHeld;
+        prevAttackHeld = attackHeld;
+
+        bool dashHeld = DashHeld();
+        bool dashDown = dashHeld && !prevDashHeld;
+        prevDashHeld = dashHeld;
+
+        bool clingHeld = ClingHeld();
+        bool clingDown = clingHeld && !prevClingHeld;
+        bool clingUp = !clingHeld && prevClingHeld;
+        prevClingHeld = clingHeld;
 
         isGrounded = Physics2D.OverlapBox(
             groundCheck.position,
@@ -89,7 +156,7 @@ public class PlayerController : MonoBehaviour
         Collider2D clingCollider = Physics2D.OverlapCircle(grabCheck.position, grabCheckRadius, clingLayer);
         bool clingContact = clingCollider != null;
 
-        if (clingContact && !isGrounded && Input.GetMouseButtonDown(1) && !isClinging)
+        if (clingContact && !isGrounded && clingDown && !isClinging)
         {
             isClinging = true;
             
@@ -107,10 +174,10 @@ public class PlayerController : MonoBehaviour
             rb.gravityScale = 0f;
         }
 
-        if (isClinging && Input.GetMouseButtonUp(1)) ReleaseCling();
+        if (isClinging && clingUp) ReleaseCling();
         if (isClinging && !clingContact) ReleaseCling();
 
-        if (Input.GetButtonDown("Jump"))
+        if (jumpDown)
         {
             if (isClinging)
             {
@@ -135,7 +202,7 @@ public class PlayerController : MonoBehaviour
 
         // dash input
         dashCooldownTimer -= Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dashCooldownTimer <= 0f && !isClinging)
+        if (dashDown && dashCooldownTimer <= 0f && !isClinging)
         {
             dashDirection = moveInput != 0f ? Mathf.Sign(moveInput) : (facingRight ? 1f : -1f);
             StartCoroutine(DashRoutine());
@@ -155,7 +222,7 @@ public class PlayerController : MonoBehaviour
 
         // === ATTACK INPUT ===
         attackTimer -= Time.deltaTime;
-        if (Input.GetMouseButtonDown(0) && attackTimer <= 0f)
+        if (attackDown && attackTimer <= 0f)
         {
             Attack();
             attackTimer = attackInputCooldown;
@@ -170,6 +237,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isEndingCutscene) return;
+
         if (isDashing)
         {
             rb.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f);
@@ -262,6 +331,15 @@ public class PlayerController : MonoBehaviour
                 continue;
             }
 
+            FinalBossArm bossArm = hit.GetComponent<FinalBossArm>();
+            if (bossArm == null) bossArm = hit.GetComponentInParent<FinalBossArm>();
+
+            if (bossArm != null)
+            {
+                bossArm.TakeDamage(attackDamage);
+                continue;
+            }
+
             ShadowBossHitbox bossHitbox = hit.GetComponent<ShadowBossHitbox>();
             if (bossHitbox == null)
                 bossHitbox = hit.GetComponentInParent<ShadowBossHitbox>();
@@ -273,6 +351,13 @@ public class PlayerController : MonoBehaviour
         Collider2D[] allHits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange);
         foreach (Collider2D hit in allHits)
         {
+            FinalBossArm bossArm = hit.GetComponent<FinalBossArm>();
+            if (bossArm != null)
+            {
+                bossArm.TakeDamage(attackDamage);
+                break;
+            }
+
             ShadowBossHitbox bossHitbox = hit.GetComponent<ShadowBossHitbox>();
             if (bossHitbox != null)
             {
@@ -316,4 +401,84 @@ public class PlayerController : MonoBehaviour
             Gizmos.DrawWireSphere(attackPoint.position, attackRange);
         }
     }
+
+    public void StartEndingCutscene(System.Collections.Generic.List<EndingWaypoint> waypoints)
+    {
+        if (isEndingCutscene) return;
+        StartCoroutine(EndingRoutine(waypoints));
+    }
+
+    private System.Collections.IEnumerator EndingRoutine(System.Collections.Generic.List<EndingWaypoint> waypoints)
+    {
+        isEndingCutscene = true;
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.gravityScale = 0f;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
+
+        if (anim != null)
+        {
+            anim.SetBool("IsGrounded", true);
+            anim.SetBool("IsClinging", false);
+            anim.SetInteger("ComboStep", 0);
+        }
+
+        for (int i = 0; i < waypoints.Count; i++)
+        {
+            EndingWaypoint wp = waypoints[i];
+            Vector3 startPos = transform.position;
+            Vector3 targetPos = new Vector3(wp.position.x, wp.position.y, transform.position.z);
+
+            float direction = targetPos.x - startPos.x;
+            if (Mathf.Abs(direction) > 0.01f)
+            {
+                if (direction > 0 && !facingRight) Flip();
+                else if (direction < 0 && facingRight) Flip();
+            }
+
+            if (anim != null)
+            {
+                anim.SetBool("IsRunning", wp.playRunningAnim);
+            }
+
+            float distance = Vector3.Distance(startPos, targetPos);
+            if (distance > 0.01f && wp.speed > 0f)
+            {
+                float duration = distance / wp.speed;
+                float elapsed = 0f;
+                while (elapsed < duration)
+                {
+                    elapsed += Time.deltaTime;
+                    float t = Mathf.Clamp01(elapsed / duration);
+                    transform.position = Vector3.Lerp(startPos, targetPos, t);
+                    yield return null;
+                }
+            }
+
+            transform.position = targetPos;
+
+            if (anim != null)
+            {
+                anim.SetBool("IsRunning", false);
+            }
+
+            if (wp.pauseDuration > 0f)
+            {
+                yield return new WaitForSeconds(wp.pauseDuration);
+            }
+        }
+    }
+}
+
+[System.Serializable]
+public class EndingWaypoint
+{
+    public string waypointName;
+    public Vector2 position;
+    public float speed = 5f;
+    public float pauseDuration = 0f;
+    public bool playRunningAnim = true;
 }

@@ -21,7 +21,8 @@ public class ShadowBoss : MonoBehaviour
     [SerializeField] private float hurtFlashDuration = 0.1f;
     [SerializeField] private Color phase2Tint = new Color(0.8f, 0.6f, 1f);
     [SerializeField] private Color phase3Tint = new Color(0.6f, 0.3f, 0.8f);
-    
+    [SerializeField] private Color DeathColor = new Color(0f, 0f, 0f);
+
     [Header("=== Breathing Effect ===")]
     [SerializeField] private float breatheSpeed = 2f;
     [SerializeField] private float breatheAmountY = 0.1f;
@@ -186,6 +187,7 @@ public class ShadowBoss : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        animator.SetTrigger("Hurt"); //eilaf
         if (!isFightActive || currentState == BossState.Defeated || isDefeated) return;
         
         if (IsInvincible)
@@ -214,7 +216,7 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetTrigger("AnimIsHurt"); 
+            animator.SetTrigger("Hurt"); //eilaf
         }
         
         PlaySound(hurtSound);
@@ -370,6 +372,9 @@ public class ShadowBoss : MonoBehaviour
 
     private IEnumerator DefeatSequence()
     {
+        animator.SetTrigger("Death"); //eilaf
+        spriteRenderer.color = DeathColor;
+
         currentState = BossState.Defeated;
         isFightActive = false;
         isDefeated = true;

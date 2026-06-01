@@ -69,7 +69,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 1.5}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -79,7 +79,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.5, y: 3}
+  m_Size: {x: 0.5, y: 4.5}
   m_EdgeRadius: 0
 --- !u!114 &412632424749702859
 MonoBehaviour:
@@ -94,14 +94,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShadowArm
   warningDuration: 1
-  warningColor: {r: 1, g: 0, b: 0, a: 0.5}
-  riseHeight: 3
+  warningColor: {r: 0.6981132, g: 0.68823427, b: 0.68823427, a: 0.49019608}
+  riseHeight: 2.5
   riseSpeed: 5
   retractSpeed: 8
   damage: 1
   knockbackForce: 1
   damageCooldown: 0.5
-  armColor: {r: 0.2, g: 0, b: 0.3, a: 1}
+  armColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!212 &-2815016654236189895
 SpriteRenderer:
   serializedVersion: 2
@@ -151,7 +151,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 167192385931972869, guid: c315fec4232591449aec4e8de7d6bcde, type: 3}
+  m_Sprite: {fileID: 202517132348601168, guid: 69c99f23af1c48d4b821420585a9cd2a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

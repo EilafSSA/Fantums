@@ -13,12 +13,16 @@ public class ShadowBarrier : MonoBehaviour
     [SerializeField] private float pulseAmount = 0.2f;
     [SerializeField] private float pulseSpeed = 2f;
     
+    
     [Header("=== Visual ===")]
     [SerializeField] private Color barrierColor = new Color(0.5f, 0f, 0.8f, 1f);
+    [SerializeField] private Sprite barrierSprite;
+    [SerializeField] private RuntimeAnimatorController barrierAnimator;
     
     private enum BarrierState { Inactive, Forming, Active, Dissolving }
     private BarrierState state = BarrierState.Inactive;
     
+    private Animator anim; //addedbyEilaf
     private GameObject[] barrierArms;
     private SpriteRenderer[] armRenderers;
     private float formProgress = 0f;
@@ -67,10 +71,19 @@ public class ShadowBarrier : MonoBehaviour
             arm.transform.localPosition = Vector3.zero;
             
             SpriteRenderer sr = arm.AddComponent<SpriteRenderer>();
-            sr.sprite = defaultSprite;
+            sr.sprite = barrierSprite != null ? barrierSprite : defaultSprite;
             sr.color = barrierColor;
             sr.sortingOrder = 100;
-            arm.transform.localScale = new Vector3(0.4f, 2f, 1f);
+            
+            if (barrierAnimator != null)
+            {
+                Animator animator = arm.AddComponent<Animator>();
+                animator.runtimeAnimatorController = barrierAnimator;
+            }
+
+            arm.transform.localScale = new Vector3(1f, -1f, 1f);
+
+            
             
             arm.SetActive(false);
             barrierArms[i] = arm;
@@ -85,7 +98,7 @@ public class ShadowBarrier : MonoBehaviour
         for (int i = 0; i < 16; i++) colors[i] = Color.white;
         tex.SetPixels(colors);
         tex.Apply();
-        return Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 4f);
+        return Sprite.Create(tex, new Rect(0, 0, 0, 0), new Vector2(1f, -1f), 4f);
     }
 
     public void Initialize(Transform boss)
@@ -107,7 +120,7 @@ public class ShadowBarrier : MonoBehaviour
             if (barrierArms[i] != null)
             {
                 barrierArms[i].SetActive(true);
-                barrierArms[i].transform.localScale = Vector3.zero;
+                //barrierArms[i].transform.localScale = Vector3.zero;
             }
         }
         
@@ -131,7 +144,7 @@ public class ShadowBarrier : MonoBehaviour
         {
             if (barrierArms[i] != null)
             {
-                barrierArms[i].transform.localScale = new Vector3(0.4f * scale, 2f * scale, 1f);
+                //barrierArms[i].transform.localScale = new Vector3(0.4f * scale, 2f * scale, 1f);
             }
         }
         
@@ -155,13 +168,13 @@ public class ShadowBarrier : MonoBehaviour
         formProgress -= Time.deltaTime * dissolveSpeed;
         formProgress = Mathf.Clamp01(formProgress);
         
-        float scale = Mathf.SmoothStep(0f, 1f, formProgress);
+        //float scale = Mathf.SmoothStep(0f, 1f, formProgress);
         
         for (int i = 0; i < barrierArms.Length; i++)
         {
             if (barrierArms[i] != null)
             {
-                barrierArms[i].transform.localScale = new Vector3(0.4f * scale, 2f * scale, 1f);
+                //barrierArms[i].transform.localScale = new Vector3(0.4f * scale, 2f * scale, 1f);
                 
                 if (armRenderers[i] != null)
                 {
