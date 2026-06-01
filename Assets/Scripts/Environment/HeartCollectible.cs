@@ -1,12 +1,17 @@
-
 using UnityEngine;
 
 public class HeartCollectible : MonoBehaviour
 {
+    [Header("=== Settings ===")]
     [SerializeField] private int healAmount = 1;
     [SerializeField] private float pickupRadius = 1.5f;
-    private Animator anim; //addedbyEilaf
     
+    [Header("=== Audio ===")]
+    [SerializeField] private AudioClip collectSound; 
+    
+    private Animator anim; //addedbyEilaf
+    private bool isCollected = false; // Added to prevent double-triggering sound or healing
+
     private void Awake()
     {
         anim = GetComponent<Animator>(); //addedbyEilaf
@@ -14,6 +19,8 @@ public class HeartCollectible : MonoBehaviour
 
     private void Update()
     {
+        if (isCollected) return;
+
         GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
@@ -24,7 +31,6 @@ public class HeartCollectible : MonoBehaviour
             }
         }
     }
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -38,6 +44,8 @@ public class HeartCollectible : MonoBehaviour
 
     private void ProcessHeal(GameObject otherObj)
     {
+        if (isCollected) return;
+
         PlayerHealth health = otherObj.GetComponent<PlayerHealth>();
 
         if (health == null)
@@ -60,7 +68,6 @@ public class HeartCollectible : MonoBehaviour
                 health = pc.GetComponent<PlayerHealth>();
             }
         }
-        
 
         if (health == null)
         {
@@ -71,11 +78,24 @@ public class HeartCollectible : MonoBehaviour
             }
         }
 
+        // Only heal and play sound if the player is actually missing health
         if (health != null && health.GetCurrentHealth() < health.GetMaxHealth())
         {
+            isCollected = true; // Instantly lock it so it can't trigger twice in the same frame
+            
             health.Heal(healAmount);
 
-            anim.SetTrigger("Sway");
+            // AUDIO: Plays the sound in 3D space at the heart's position. 
+            // It persists perfectly even after the GameObject is destroyed!
+            if (collectSound != null)
+            {
+                AudioSource.PlayClipAtPoint(collectSound, transform.position);
+            }
+
+            if (anim != null)
+            {
+                anim.SetTrigger("Sway");
+            }
 
             Destroy(gameObject, 1f);
         }
