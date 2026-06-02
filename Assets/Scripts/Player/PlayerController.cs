@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -36,6 +37,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gamepadStickDeadzone = 0.25f;
     [SerializeField] private float gamepadTriggerThreshold = 0.5f;
 
+    [Header("=== Input (Input System) ===")]
+    [Tooltip("Drag actions from InputSystem_Actions > Player here.")]
+    [SerializeField] private InputActionReference moveAction;
+    [SerializeField] private InputActionReference jumpAction;
+    [SerializeField] private InputActionReference attackAction;
+    [SerializeField] private InputActionReference sprintAction;
+    [SerializeField] private InputActionReference clingAction;
+
     private Animator anim; //addedbyEilaf
     private Rigidbody2D rb;
     private float moveInput;
@@ -69,41 +78,62 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>(); //addedbyEilaf - moved here so it only runs once instead of every frame
     }
 
+    private void OnEnable()
+    {
+        EnableAction(moveAction);
+        EnableAction(jumpAction);
+        EnableAction(attackAction);
+        EnableAction(sprintAction);
+        EnableAction(clingAction);
+    }
+
+    private static void EnableAction(InputActionReference reference)
+    {
+        if (reference != null && reference.action != null)
+            reference.action.Enable();
+    }
+
+    // pull a live action: prefer the assigned reference, fall back to InputManager so saved rebinds apply
+    private InputAction Resolve(InputActionReference reference, System.Func<InputManager, InputAction> fromManager)
+    {
+        if (reference != null && reference.action != null)
+            return reference.action;
+        if (InputManager.Instance != null)
+            return fromManager(InputManager.Instance);
+        return null;
+    }
+
     private float ReadMoveAxis()
     {
-        float kb = Input.GetAxisRaw("Horizontal");
-        if (Mathf.Abs(kb) < gamepadStickDeadzone) kb = 0f;
-        return Mathf.Clamp(kb, -1f, 1f);
+        InputAction a = Resolve(moveAction, m => m.Move);
+        if (a == null) return 0f;
+        float x = a.ReadValue<Vector2>().x;
+        if (Mathf.Abs(x) < gamepadStickDeadzone) x = 0f;
+        return Mathf.Clamp(x, -1f, 1f);
     }
 
     private bool JumpHeld()
     {
-        return Input.GetButton("Jump") || Input.GetKey(KeyCode.JoystickButton0);
+        InputAction a = Resolve(jumpAction, m => m.Jump);
+        return a != null && a.IsPressed();
     }
 
     private bool AttackHeld()
     {
-        if (Input.GetMouseButton(0)) return true;
-        if (Input.GetKey(KeyCode.JoystickButton2)) return true;
-        return false;
+        InputAction a = Resolve(attackAction, m => m.Attack);
+        return a != null && a.IsPressed();
     }
 
     private bool DashHeld()
     {
-        if (Input.GetKey(KeyCode.LeftShift)) return true;
-        if (Input.GetKey(KeyCode.JoystickButton1)) return true;
-        if (Input.GetKey(KeyCode.JoystickButton4)) return true;
-        return false;
+        InputAction a = Resolve(sprintAction, m => m.Sprint);
+        return a != null && a.IsPressed();
     }
 
     private bool ClingHeld()
     {
-        if (Input.GetMouseButton(1)) return true;
-        if (Input.GetKey(KeyCode.JoystickButton5)) return true;
-        float rt = 0f;
-        try { rt = Input.GetAxisRaw("RightTrigger"); } catch { }
-        if (rt > gamepadTriggerThreshold) return true;
-        return false;
+        InputAction a = Resolve(clingAction, m => m.Cling);
+        return a != null && a.IsPressed();
     }
 
     private void Update()
