@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class DoorTransition : MonoBehaviour
 {
@@ -7,12 +8,32 @@ public class DoorTransition : MonoBehaviour
     [SerializeField] private AudioSource doorSource; //audio
     [SerializeField] private AudioClip teleportSound;//audio
 
+    [Header("=== Input ===")]
+    [SerializeField] private InputActionReference interactAction;
+
     private bool playerInRange;
     private GameObject playerObject;
 
+    private void OnEnable()
+    {
+        if (interactAction != null && interactAction.action != null)
+            interactAction.action.Enable();
+    }
+
+    private bool EnterPressed()
+    {
+        if (interactAction != null && interactAction.action != null)
+            return interactAction.action.WasPressedThisFrame();
+
+        if (InputManager.Instance != null && InputManager.Instance.Interact != null)
+            return InputManager.Instance.Interact.WasPressedThisFrame();
+
+        return Keyboard.current != null && Keyboard.current.yKey.wasPressedThisFrame;
+    }
+
     private void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.F))
+        if (playerInRange && EnterPressed())
         {
             if (teleportTarget == null)
             {
@@ -46,7 +67,7 @@ public class DoorTransition : MonoBehaviour
         {
             playerInRange = true;
             playerObject = other.gameObject;
-            Debug.Log("Press F to enter door.");
+            Debug.Log("Press Y to enter door.");
         }
     }
 
