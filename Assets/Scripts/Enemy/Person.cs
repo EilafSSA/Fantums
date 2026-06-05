@@ -16,28 +16,22 @@ public class EnemyAudio : MonoBehaviour
     [SerializeField] private float maxPitch = 1.15f; 
 
     private Coroutine footstepCoroutine;
-    private static System.Action OnBossRoomEntered; 
-    
-    // A permanent global flag to lock out any footsteps from new spawns
-    private static bool hasBossRoomBeenEntered = false;
 
-    public static void StopAllEnemyFootsteps()
-    {
-        hasBossRoomBeenEntered = true; // Set the permanent lock
-        OnBossRoomEntered?.Invoke();   // Clear out existing ones
-    }
+    // The global kill-switch
+    public static bool masterMute = false;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        // REMOVED: masterMute = false; <-- This was resetting the mute for everyone!
     }
 
     private void OnEnable()
     {
-        OnBossRoomEntered += HandleBossRoomEntered;
+        // If the master mute has been flipped by the cutscene, block the loop instantly
+        if (masterMute) return;
 
-        // CRUCIAL: Only start footsteps if the boss room has NOT been entered yet
-        if (runLoopClip != null && footstepCoroutine == null && !hasBossRoomBeenEntered)
+        if (runLoopClip != null && footstepCoroutine == null)
         {
             footstepCoroutine = StartCoroutine(PlayFootsteps());
         }
@@ -45,7 +39,6 @@ public class EnemyAudio : MonoBehaviour
 
     private void OnDisable()
     {
-        OnBossRoomEntered -= HandleBossRoomEntered;
         StopFootstepLoop();
     }
 
@@ -53,13 +46,22 @@ public class EnemyAudio : MonoBehaviour
     {
         while (true)
         {
+            // Direct escape hatch if the mute gets flipped mid-loop
+            if (masterMute)
+            {
+                StopFootstepLoop();
+                yield break;
+            }
+
+            if (audioSource == null) yield break;
+            
             audioSource.pitch = Random.Range(minPitch, maxPitch);
             audioSource.PlayOneShot(runLoopClip, stepVolume);
             yield return new WaitForSeconds(stepRate);
         }
     }
 
-    private void HandleBossRoomEntered()
+    public void ForceStopFootsteps()
     {
         StopFootstepLoop();
     }

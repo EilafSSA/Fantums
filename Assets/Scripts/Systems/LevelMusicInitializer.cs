@@ -3,6 +3,11 @@ using UnityEngine;
 public class LevelMusicInitializer : MonoBehaviour
 {
     [SerializeField] private AudioClip level2Music;
+    private void Awake()
+{
+    // Restores footsteps to functional when the level freshly boots up
+    EnemyAudio.masterMute = false; 
+}
 
     private void Start()
     {
