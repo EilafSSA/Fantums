@@ -77,7 +77,7 @@ public class HeartCollectible : MonoBehaviour
 
             anim.SetTrigger("Sway");
 
-            Destroy(gameObject, 1f);
+            Destroy(gameObject, 0.85f);
         }
     }
 }
