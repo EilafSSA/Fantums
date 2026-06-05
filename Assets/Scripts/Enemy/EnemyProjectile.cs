@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// for some reason this was so damn hard (best notes askodfjaskldfj)
-// this was suppsoed to e a simple proj script but idk why it was so hard to get it work right 
 public class EnemyProjectile : MonoBehaviour
 {
     [Header("=== Projectile Settings ===")]
@@ -14,13 +12,13 @@ public class EnemyProjectile : MonoBehaviour
     [SerializeField] private bool rotateToDirection = true;
 
     [Header("=== Destroy On ===")]
-    [Tooltip("Layers that destroy this projectile on contact (god help me)")]
+    [Tooltip("Layers that destroy this projectile on contact")]
     [SerializeField] private LayerMask groundLayer;
 
     [Header("=== Audio ===")]
     [SerializeField] private AudioClip popSound;
+    [Range(0f, 1f)] [SerializeField] private float popVolume = 0.8f; // Easy volume tweak directly from Inspector
 
-    private Animator anim; //addedbyEilaf
     private Rigidbody2D rb;
     private Vector2 direction = Vector2.right;
     private bool consumed;
@@ -34,9 +32,6 @@ public class EnemyProjectile : MonoBehaviour
             rb.gravityScale = 0f;
             rb.freezeRotation = true;
         }
-
-        // Optimization: Grab animator ONCE at awake instead of abusing Update()
-        anim = GetComponent<Animator>(); 
     }
 
     public void Launch(Vector2 dir, float overrideSpeed = -1f)
@@ -58,13 +53,11 @@ public class EnemyProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (anim != null) anim.SetTrigger("Shoot"); // addedbyEilaf (Safe check)
         HandleHit(other);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (anim != null) anim.SetTrigger("Shoot"); // addedbyEilaf (Safe check)
         HandleHit(collision.collider);
     }
 
@@ -72,8 +65,9 @@ public class EnemyProjectile : MonoBehaviour
     {
         if (consumed) return;
 
-        if (other.GetComponent<EnemyProjectile>() != null) return;
-        if (other.GetComponentInParent<EnemyProjectile>() != null) return;
+        // Skip hitting fellow projectiles
+        if (other.GetComponent<EnemyProjectile>() != null || other.GetComponentInParent<EnemyProjectile>() != null) 
+            return;
 
         PlayerHealth hp = other.GetComponent<PlayerHealth>();
         if (hp == null) hp = other.GetComponentInParent<PlayerHealth>();
@@ -110,13 +104,21 @@ public class EnemyProjectile : MonoBehaviour
         }
     }
 
-    // Audio helper function to execute the clip instantly in 3D space
     private void TriggerPopAudio()
     {
         if (popSound != null)
         {
-            // Plays the sound right at the projectile's position even if the object disappears
-            AudioSource.PlayClipAtPoint(popSound, transform.position, 0.7f);
+            // Create independent temp sound object so 3D camera distance attenuation doesn't crush it
+            GameObject tempAudioObj = new GameObject("TempPopAudio");
+            tempAudioObj.transform.position = transform.position;
+
+            AudioSource source = tempAudioObj.AddComponent<AudioSource>();
+            source.clip = popSound;
+            source.volume = popVolume;
+            source.spatialBlend = 0.0f; // Force to 2D space so it sounds loud and direct everywhere
+            source.Play();
+
+            Destroy(tempAudioObj, popSound.length);
         }
     }
 }

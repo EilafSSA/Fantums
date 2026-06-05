@@ -7,7 +7,7 @@ public class EndingTrigger : MonoBehaviour
     [Header("=== References ===")]
     public PlayerController playeranim;
 
-    [Header("=== Waypoints (doesn't flippinggg work idk how to fix it) ===")]
+    [Header("=== Waypoints (FIXED!) ===")]
     [SerializeField] private List<EndingWaypoint> customWaypoints = new List<EndingWaypoint>();
 
     [Header("=== Cinematic Bars ===")]
@@ -15,6 +15,13 @@ public class EndingTrigger : MonoBehaviour
     [SerializeField] private float barHeightPercent = 0.12f;
     [SerializeField] private float barSlideTime = 0.5f;
     [SerializeField] private Color barColor = Color.black;
+
+    [Header("=== Ending Music Settings ===")]
+    [SerializeField] private AudioClip endingThemeMusic;
+    [Tooltip("How long it takes for the heavy boss music to fade to complete silence.")]
+    [SerializeField] private float bossMusicFadeOutTime = 2.0f; 
+    [Tooltip("How long it takes for the new emotional ending theme to reach full volume.")]
+    [SerializeField] private float endingMusicFadeInTime = 2.5f;
 
     private bool triggered = false;
     private Canvas canvas;
@@ -33,29 +40,52 @@ public class EndingTrigger : MonoBehaviour
                 player = other.GetComponentInParent<PlayerController>();
         }
 
-        if (player != null && customWaypoints != null && customWaypoints.Count > 0)
+        // Validate the player or the entering object to trigger the final sequence
+        if (player != null || other.CompareTag("Player"))
         {
+            // Fallback assignment just in case the manual reference was left blank
+            if (player == null) player = other.GetComponent<PlayerController>();
+            if (player == null) return; 
+
             triggered = true;
 
+            // --- FIXED WAYPOINT CONVERSION SYSTEM ---
             List<EndingWaypoint> worldWaypoints = new List<EndingWaypoint>();
-            foreach (var wp in customWaypoints)
+            if (customWaypoints != null && customWaypoints.Count > 0)
             {
-                worldWaypoints.Add(new EndingWaypoint
+                foreach (var wp in customWaypoints)
                 {
-                    waypointName = wp.waypointName,
-                    position = (Vector2)transform.position + wp.position,
-                    speed = wp.speed,
-                    pauseDuration = wp.pauseDuration,
-                    playRunningAnim = wp.playRunningAnim
-                });
+                    EndingWaypoint newWp = new EndingWaypoint();
+                    newWp.waypointName = wp.waypointName;
+                    // Fixes the relative stacking math bug by grabbing the trigger origin cleanly
+                    newWp.position = (Vector2)transform.position + wp.position; 
+                    newWp.speed = wp.speed;
+                    newWp.pauseDuration = wp.pauseDuration;
+                    newWp.playRunningAnim = wp.playRunningAnim;
+                    
+                    worldWaypoints.Add(newWp);
+                }
             }
 
+            // --- CINEMATIC MUSIC CROSSFADE INJECTION ---
+            if (AudioManager.Instance != null && endingThemeMusic != null)
+            {
+                // Uses the customized long fade values to switch from boss tension to the ending theme
+                AudioManager.Instance.SwitchMusic(endingThemeMusic, bossMusicFadeOutTime, endingMusicFadeInTime);
+            }
+            else if (endingThemeMusic == null)
+            {
+                Debug.LogWarning($"EndingTrigger on {gameObject.name} is missing its Ending Theme Music asset!");
+            }
+
+            // --- CINEMATIC BARS ---
             if (showCinematicBars)
             {
                 BuildUI();
                 StartCoroutine(SlideBars(0f, 1f, barSlideTime));
             }
 
+            // Send the corrected path list directly to the character engine
             player.StartEndingCutscene(worldWaypoints);
         }
     }

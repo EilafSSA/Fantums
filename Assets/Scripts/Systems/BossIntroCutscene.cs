@@ -6,9 +6,10 @@ using TMPro;
 public class BossIntroCutscene : MonoBehaviour
 {
     [Header("=== References ===")]
+    [SerializeField] private GameObject peopleSpawnerObject; // Optional reference to the PeopleSpawner in the boss room, used to disable it during the cutscene if assigned.
     [SerializeField] private Transform bossTransform;
     [SerializeField] private Animator bossAnimator;
-    [Tooltip("Animator trigger fired on the boss when the camera reaches hims.")]
+    [Tooltip("Animator trigger fired on the boss when the camera reaches him.")]
     [SerializeField] private string bossIntroTrigger = "IntroAnim";
 
     [Header("=== Name Card ===")]
@@ -28,10 +29,13 @@ public class BossIntroCutscene : MonoBehaviour
     [SerializeField] private float barRetractTime = 0.3f;
 
     [Header("=== Visual ===")]
-    [Tooltip("Height of each cinematic bar as a f")]
+    [Tooltip("Height of each cinematic bar as a percentage.")]
     [SerializeField] private float barHeightPercent = 0.1f;
     [SerializeField] private Color barColor = Color.black;
     [SerializeField] private float cameraPanSmooth = 5f;
+
+    [Header("=== Boss Music Trigger Settings ===")]
+    [SerializeField] private AudioClip bossBattleTheme;
 
     private Canvas canvas;
     private RectTransform topBar;
@@ -40,6 +44,8 @@ public class BossIntroCutscene : MonoBehaviour
     private CanvasGroup nameGroup;
 
     private bool isPlaying;
+    private bool musicTriggered = false; // Prevents overlapping trigger issues if walked over multiple times
+
     public Coroutine Play(Transform playerTransform)
     {
         if (isPlaying) return null;
@@ -49,6 +55,25 @@ public class BossIntroCutscene : MonoBehaviour
     private IEnumerator CutsceneRoutine(Transform playerTransform)
     {
         isPlaying = true;
+
+        // --- AUDIO TRANSITION INJECTION ---
+        if (!musicTriggered)
+        {
+            musicTriggered = true;
+
+            // 1. Kill all standard background level footsteps instantly
+            EnemyAudio.StopAllEnemyFootsteps();
+
+            // 2. Command AudioManager to fade out the previous track and fade in the fight theme
+            if (AudioManager.Instance != null && bossBattleTheme != null)
+            {
+                AudioManager.Instance.SwitchToBossMusic(bossBattleTheme, 0.5f, 1.0f);
+            }
+            else if (bossBattleTheme == null)
+            {
+                Debug.LogWarning($"BossIntroCutscene on {gameObject.name}: Boss Battle Theme clip field is empty in the Inspector!");
+            }
+        }
 
         Rigidbody2D playerRb = playerTransform != null ? playerTransform.GetComponent<Rigidbody2D>() : null;
         PlayerController pc = playerTransform != null ? playerTransform.GetComponent<PlayerController>() : null;

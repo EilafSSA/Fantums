@@ -31,6 +31,7 @@ public class ShadowBoss : MonoBehaviour
     [Header("=== Audio ===")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip hurtSound;
+    [SerializeField] private AudioClip[] hitSounds;
     [SerializeField] private AudioClip phaseTransitionSound;
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private AudioClip valveSound;
@@ -211,15 +212,15 @@ public class ShadowBoss : MonoBehaviour
     private IEnumerator HurtSequence()
     {
         currentState = BossState.Hurt;
-        
         StartCoroutine(FlashSprite());
         
         if (animator != null)
         {
-            animator.SetTrigger("Hurt"); //eilaf
+            animator.SetTrigger("Hurt");
         }
         
-        PlaySound(hurtSound);
+        // Play all hit sounds
+        PlaySound(hitSounds); 
         
         if (CameraFollow.Instance != null)
         {
@@ -227,9 +228,7 @@ public class ShadowBoss : MonoBehaviour
         }
         
         yield return new WaitForSeconds(0.3f);
-        
         UpdatePhase();
-        
         StartCoroutine(ValveSequence());
     }
 
@@ -250,9 +249,11 @@ public class ShadowBoss : MonoBehaviour
             animator.SetTrigger("AnimSpinValve"); 
         }
         
-        // Layering the physical smash with the mechanical valve audio activation
-        PlaySound(tableSlamSound);
-        PlaySound(valveSound);
+        // --- DELAYED AUDIO EXECUTION ---
+        // Play table slam after some seconds
+        StartCoroutine(PlayDelayedSound(tableSlamSound, 0.1f));
+        // Play valve sound after some seconds
+        StartCoroutine(PlayDelayedSound(valveSound, 1.9f));
         
         yield return new WaitForSeconds(1f);
         
@@ -265,6 +266,13 @@ public class ShadowBoss : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         
         EnterInvincibility();
+    }
+
+    // Added this helper method at the end of the script
+    private IEnumerator PlayDelayedSound(AudioClip clip, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        PlaySound(clip);
     }
 
     private void EnterInvincibility()
@@ -372,35 +380,27 @@ public class ShadowBoss : MonoBehaviour
 
     private IEnumerator DefeatSequence()
     {
-        animator.SetTrigger("Death"); //eilaf
+        animator.SetTrigger("Death"); 
         spriteRenderer.color = DeathColor;
 
         currentState = BossState.Defeated;
         isFightActive = false;
         isDefeated = true;
         
-        if (barrier != null)
-            barrier.Deactivate();
+        // Ensure other systems are cleaned up
+        if (barrier != null) barrier.Deactivate();
+        if (arena != null) arena.OnBossInvincibilityEnd();
         
-        if (arena != null)
-            arena.OnBossInvincibilityEnd();
-        
-        if (animator != null)
-            animator.SetTrigger("AnimDefeated");
+        // --- PLAY DEATH SOUND AND LAYERED HIT SOUNDS TOGETHER ---
         
         PlaySound(deathSound);
+        PlayLayeredSounds(hitSounds, 1.0f); // Plays everything in the array at once
         
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.TriggerShake();
         
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.AddEnemyKillScore();
-            GameManager.Instance.AddScore(1000);
-        }
         
         yield return new WaitForSeconds(2f);
-        
         OnBossDefeated?.Invoke();
     }
 
@@ -427,11 +427,18 @@ public class ShadowBoss : MonoBehaviour
         }
     }
 
-    private void PlaySound(AudioClip clip)
+    // Centralized method to play one or more audio clips
+    private void PlaySound(params AudioClip[] clips)
     {
-        if (audioSource != null && clip != null)
+        if (audioSource == null) return;
+
+        foreach (AudioClip clip in clips)
         {
-            audioSource.PlayOneShot(clip);
+            if (clip != null)
+            {
+                // Using PlayOneShot allows multiple sounds to overlap without cutting each other off
+                audioSource.PlayOneShot(clip);
+            }
         }
     }
 
@@ -458,4 +465,27 @@ public class ShadowBoss : MonoBehaviour
             Gizmos.DrawWireSphere(valveTransform.position, 0.5f);
         }
     }
-}
+    
+
+    // New method to play multiple sounds layered together
+    private void PlayLayeredSounds(AudioClip[] clips, float volume)
+    {
+        foreach (AudioClip clip in clips)
+        {
+            if (clip != null)
+            {
+                GameObject tempAudio = new GameObject("TempBossAudio_" + clip.name);
+                tempAudio.transform.position = transform.position;
+
+                AudioSource tempSource = tempAudio.AddComponent<AudioSource>();
+                tempSource.clip = clip;
+                tempSource.volume = volume;
+                tempSource.spatialBlend = 0.0f; 
+                tempSource.Play();
+
+                Destroy(tempAudio, clip.length);
+            }
+        }
+    }
+
+} 

@@ -1,104 +1,119 @@
 using UnityEngine;
 
-// wallmounted enemy. doesnt move. sees the player within range, spits blobs toward them.
-// pairing this with an EnemyHealth so the player can destroy it by attacking. if not paired then just a turret 
+// Wall-mounted enemy. Remains static. Detects the player within range and launches projectile blobs toward them.
+// Can be paired with an EnemyHealth component for destructibility, or left standalone to function as an immutable turret.
 public class BlobSpewer : MonoBehaviour
 {
     [Header("=== Targeting ===")]
     [SerializeField] private Transform player;
     [SerializeField] private float detectionRange = 10f;
-    [SerializeField] private LayerMask lineOfSightBlockers; // leave 0 to skip line of sight check
+    [SerializeField] private LayerMask lineOfSightBlockers; // Set to 0/Nothing to bypass line of sight verification
 
     [Header("=== Firing ===")]
     [SerializeField] private EnemyProjectile blobPrefab;
     [SerializeField] private Transform firePoint;
-    [SerializeField] private float fireRate = 1.1f;          // average ish pace
+    [SerializeField] private float fireRate = 1.1f;               // Delay cadence between subsequent shots
     [SerializeField] private float firstShotDelay = 0.4f;
-    [SerializeField] private float projectileSpeedOverride = -1f; // -1 = use prefab speed
+    [SerializeField] private float projectileSpeedOverride = -1f; // -1 defaults to standard prefab velocity settings
 
-    [Header("=== Animation ===")] //for eliaf :D [i hope i formated this right]
+    [Header("=== Animation ===")] 
     [SerializeField] private Animator anim;
     [SerializeField] private string shootTrigger = "Shoot";
 
     [Header("=== Audio ===")]
-    [SerializeField] private AudioSource spewerSource;
     [SerializeField] private AudioClip detectionSound;
     [SerializeField] private AudioClip fireSound;
+    [Range(0f, 1f)] [SerializeField] private float fireVolume = 1f;
 
     private float fireTimer;
-    private bool playerIsDetected = false; // Tracks state so detection sound only plays ONCE
+    private bool playerIsDetected = false; // Internal tracking state to prevent detection sound spamming
 
     private void Start()
     {
         fireTimer = firstShotDelay;
 
-        // Optimization: Grab animator once at start instead of crushing performance in Update()
-        if (anim == null) anim = GetComponent<Animator>(); 
+        if (anim == null) 
+            anim = GetComponent<Animator>(); 
 
         if (player == null)
         {
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) player = p.transform;
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null) 
+                player = playerObj.transform;
         }
     }
 
     private void Update()
     {
-        if (player == null || blobPrefab == null || firePoint == null) return;
+        if (player == null || blobPrefab == null || firePoint == null) 
+            return;
 
-        float dist = Vector2.Distance(transform.position, player.position);
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         
-        // Player out of range
-        if (dist > detectionRange) 
+        if (distanceToPlayer > detectionRange) 
         {
-            playerIsDetected = false; // Reset state when player leaves range
+            playerIsDetected = false; 
             return;
         }
 
-        // optional line of sight only shoot if nothing is between us
+        // Optional line-of-sight raycast validation
         if (lineOfSightBlockers.value != 0)
         {
-            Vector2 dirToPlayer = ((Vector2)player.position - (Vector2)firePoint.position).normalized;
-            RaycastHit2D hit = Physics2D.Raycast(firePoint.position, dirToPlayer, dist, lineOfSightBlockers);
+            Vector2 directionToPlayer = ((Vector2)player.position - (Vector2)firePoint.position).normalized;
+            RaycastHit2D hit = Physics2D.Raycast(firePoint.position, directionToPlayer, distanceToPlayer, lineOfSightBlockers);
             if (hit.collider != null) 
             {
-                playerIsDetected = false; // Treat lost sight line as out of range
+                playerIsDetected = false; 
                 return;
             }
         }
 
-        // TRIGGER DETECTION SOUND: Executed exactly once when the player steps into range
         if (!playerIsDetected)
         {
             playerIsDetected = true;
-            if (spewerSource != null && detectionSound != null)
-            {
-                spewerSource.PlayOneShot(detectionSound);
-            }
+            TriggerAudioPlayback(detectionSound);
         }
 
         fireTimer -= Time.deltaTime;
         if (fireTimer <= 0f)
         {
-            Fire();
+            ExecuteFiringSequence();
             fireTimer = fireRate;
         }
     }
 
-    private void Fire()
+    private void ExecuteFiringSequence()
     {
-        Vector2 dir = ((Vector2)player.position - (Vector2)firePoint.position).normalized;
+        TriggerAudioPlayback(fireSound);
 
-        EnemyProjectile proj = Instantiate(blobPrefab, firePoint.position, Quaternion.identity);
-        proj.Launch(dir, projectileSpeedOverride);
-
-        // TRIGGER FIRING SOUND
-        if (spewerSource != null && fireSound != null)
+        if (player != null && firePoint != null && blobPrefab != null)
         {
-            spewerSource.PlayOneShot(fireSound);
+            Vector2 launchDirection = ((Vector2)player.position - (Vector2)firePoint.position).normalized;
+            EnemyProjectile projectileInstance = Instantiate(blobPrefab, firePoint.position, Quaternion.identity);
+            projectileInstance.Launch(launchDirection, projectileSpeedOverride);
         }
 
-        if (anim != null) anim.SetTrigger(shootTrigger);
+        if (anim != null) 
+        {
+            anim.SetTrigger(shootTrigger);
+        }
+    }
+
+    private void TriggerAudioPlayback(AudioClip clipToPlay)
+    {
+        if (clipToPlay != null)
+        {
+            GameObject temporaryAudioContainer = new GameObject("RuntimeAudio_" + clipToPlay.name);
+            temporaryAudioContainer.transform.position = transform.position;
+
+            AudioSource dynamicSource = temporaryAudioContainer.AddComponent<AudioSource>();
+            dynamicSource.clip = clipToPlay;
+            dynamicSource.volume = fireVolume;
+            dynamicSource.spatialBlend = 0.0f; // Constrains playback to 2D channel space for maximum consistency
+            dynamicSource.Play();
+
+            Destroy(temporaryAudioContainer, clipToPlay.length);
+        }
     }
 
     private void OnDrawGizmosSelected()

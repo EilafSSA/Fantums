@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class FinalBossArm : MonoBehaviour
 {
     //ADDED BY EILAF:
@@ -28,10 +29,18 @@ public class FinalBossArm : MonoBehaviour
     [Header("=== Damage ===")]
     [SerializeField] private int touchDamage = 1;
 
+    [Header("=== Arm Audio Settings ===")]
+    [SerializeField, Range(0f, 1f)] private float armSFXVolume = 0.5f;
+    [SerializeField] private AudioClip warningClip; // Fired during color flash telegraph
+    [SerializeField] private AudioClip wooshClip;   // Fired during fast movement (Sweep)
+    [SerializeField] private AudioClip smashClip;   // Fired when striking the floor
+    [SerializeField] private AudioClip armHurtClip; // Local hurt clip for arm strike
+
     public bool IsDead => currentHealth <= 0;
     public bool IsAttacking => isAttacking;
     
     private Animator anim; //addedbyEilaf
+    private AudioSource audioSource;
     private Vector3 idleBasePosition;
     private Vector3 initialScale;
     private bool isAttacking = false;
@@ -44,14 +53,19 @@ public class FinalBossArm : MonoBehaviour
     private void Awake()
     {
         anim = GetComponent<Animator>(); //addedbyEilaf
+        audioSource = GetComponent<AudioSource>();
         currentHealth = maxHealth;
         initialScale = transform.localScale;
         if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null) spriteRenderer.color = idleColor;
-    }
 
-    //anim.SetBool("IsClinging", false);
-    //anim.SetTrigger("Jump");
+        // Configure internal AudioSource state
+        if (audioSource != null)
+        {
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 0f; // Global 2D mix space
+        }
+    }
 
     public void ResetArm()
     {
@@ -80,7 +94,6 @@ public class FinalBossArm : MonoBehaviour
 
         if (!isAttacking)
         {
-
             float time = Time.time;
             transform.position = idleBasePosition + Vector3.up * Mathf.Sin(time * hoverSpeed) * hoverDistance;
             
@@ -92,8 +105,13 @@ public class FinalBossArm : MonoBehaviour
     public void TakeDamage(int amount)
     {
         mainbody.bodyHurt(); //addedbyEilaf
-        if (IsDead) return;
+        
+        if (audioSource != null && armHurtClip != null)
+        {
+            audioSource.PlayOneShot(armHurtClip, armSFXVolume);
+        }
 
+        if (IsDead) return;
         if (!isAttacking) return;
         if (hasBeenHitThisAttack) return;
 
@@ -148,7 +166,6 @@ public class FinalBossArm : MonoBehaviour
         if (ph == null) ph = other.GetComponentInParent<PlayerHealth>();
         if (ph != null)
         {
-
             if (!isReturning)
             {
                 ph.TakeDamage(touchDamage);
@@ -156,10 +173,8 @@ public class FinalBossArm : MonoBehaviour
         }
         else
         {
-
             ShadowBossHitbox hitbox = other.GetComponent<ShadowBossHitbox>();
             if (hitbox == null) hitbox = other.GetComponentInParent<ShadowBossHitbox>();
-
         }
     }
 
@@ -189,14 +204,20 @@ public class FinalBossArm : MonoBehaviour
         hasBeenHitThisAttack = false;
         isReturning = false;
         transform.localScale = initialScale;
+        
+        // 1. Telegraph Phase: Flash Color & Play Warning Audio
         if (spriteRenderer != null) spriteRenderer.color = telegraphColor;
+        if (audioSource != null && warningClip != null) audioSource.PlayOneShot(warningClip, armSFXVolume);
 
         anim.SetTrigger("startSweep"); //addedbyEilaf
         Vector3 startPos = new Vector3(startX, yLevel, 0f);
         yield return MoveTo(startPos, 2f);
         
         yield return new WaitForSeconds(0.5f);
+        
+        // 2. Execution Phase: Trigger Swing Animation & Whoosh Audio
         anim.SetTrigger("Sweep"); //addedbyEilaf
+        if (audioSource != null && wooshClip != null) audioSource.PlayOneShot(wooshClip, armSFXVolume);
 
         Vector3 endPos = new Vector3(endX, yLevel, 0f);
         yield return MoveTo(endPos, duration);
@@ -221,7 +242,10 @@ public class FinalBossArm : MonoBehaviour
         hasBeenHitThisAttack = false;
         isReturning = false;
         transform.localScale = initialScale;
+        
+        // 1. Telegraph Phase: Flash Color & Play Warning Audio
         if (spriteRenderer != null) spriteRenderer.color = telegraphColor;
+        if (audioSource != null && warningClip != null) audioSource.PlayOneShot(warningClip, armSFXVolume);
 
         anim.SetTrigger("Smash"); //addedbyEilaf
         Vector3 hoverPos = new Vector3(targetX, startY, 0f);
@@ -229,9 +253,13 @@ public class FinalBossArm : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-
+        // 2. Falling Execution Phase: Play Whoosh on descent path
+        if (audioSource != null && wooshClip != null) audioSource.PlayOneShot(wooshClip, armSFXVolume);
         Vector3 floorPos = new Vector3(targetX, floorY, 0f);
         yield return MoveTo(floorPos, 0.15f);
+
+        // 3. Impact Phase: Play Smash/Impact sound upon floor destination
+        if (audioSource != null && smashClip != null) audioSource.PlayOneShot(smashClip, armSFXVolume);
 
         yield return new WaitForSeconds(0.5f);
 

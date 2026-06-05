@@ -21,14 +21,10 @@ public class ShadowArm : MonoBehaviour
     [Header("=== Visual ===")]
     [SerializeField] private Color armColor = new Color(0.3f, 0f, 0.5f, 1f);
 
-    [Header("=== Audio ===")]
-    [SerializeField] private AudioSource armSource;
-    [SerializeField] private AudioClip warningSound;
-    
     private enum ArmState { Warning, Rising, Active, Retracting, Inactive }
     private ArmState state = ArmState.Inactive;
     
-    private Animator anim; //addedbyEilaf
+    private Animator anim;
     private Vector3 startPosition;
     private Vector3 targetPosition;
     private Vector3 emergeDir;
@@ -45,40 +41,18 @@ public class ShadowArm : MonoBehaviour
 
     private void Awake()
     {
-        anim = GetComponent<Animator>(); //addedbyEilaf
+        anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // Fallback optimization: Grab attached AudioSource if not manually dragged in
-        if (armSource == null) armSource = GetComponent<AudioSource>();
-        
-        if (spriteRenderer != null && spriteRenderer.sprite == null)
-        {
-            Texture2D tex = new Texture2D(4, 4);
-            Color[] colors = new Color[16];
-            for (int i = 0; i < 16; i++) colors[i] = Color.white;
-            tex.SetPixels(colors);
-            tex.Apply();
-            spriteRenderer.sprite = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 4f);
-            spriteRenderer.sortingOrder = 50;
-        }
     }
 
     private void Update()
     {
         switch (state)
         {
-            case ArmState.Warning:
-                UpdateWarning();
-                break;
-            case ArmState.Rising:
-                UpdateRising();
-                break;
-            case ArmState.Active:
-                UpdateActive();
-                break;
-            case ArmState.Retracting:
-                UpdateRetracting();
-                break;
+            case ArmState.Warning: UpdateWarning(); break;
+            case ArmState.Rising: UpdateRising(); break;
+            case ArmState.Active: UpdateActive(); break;
+            case ArmState.Retracting: UpdateRetracting(); break;
         }
     }
 
@@ -86,28 +60,22 @@ public class ShadowArm : MonoBehaviour
     {
         direction = emergeDirection;
         SetDirectionVectors();
-        
         startPosition = surfacePosition;
         targetPosition = surfacePosition + emergeDir * riseHeight;
         transform.position = startPosition;
         
-        ApplyWarningScale();
+        transform.localScale = new Vector3(1.5f, 0.3f, 1f);
         ApplyRotation();
         
         warningTimer = warningDuration;
         state = ArmState.Warning;
         isActive = true;
-        
         gameObject.SetActive(true);
         
-        // ANIMATION: Fire the warning state trigger EXACTLY ONCE
         if (anim != null) anim.SetTrigger("warn");
-
-        // AUDIO: Play the warning sound on emergence right where the arm spawns
-        if (armSource != null && warningSound != null)
-        {
-            armSource.PlayOneShot(warningSound);
-        }
+        
+        // This line communicates with your new AudioManager script
+        AudioManager.Instance.PlayArmWarningSounds(transform.position);
         
         if (spriteRenderer != null)
         {
@@ -120,22 +88,10 @@ public class ShadowArm : MonoBehaviour
     {
         switch (direction)
         {
-            case EmergeDirection.Up:
-                emergeDir = Vector3.up;
-                perpDir = Vector3.right;
-                break;
-            case EmergeDirection.Down:
-                emergeDir = Vector3.down;
-                perpDir = Vector3.right;
-                break;
-            case EmergeDirection.Left:
-                emergeDir = Vector3.left;
-                perpDir = Vector3.up;
-                break;
-            case EmergeDirection.Right:
-                emergeDir = Vector3.right;
-                perpDir = Vector3.up;
-                break;
+            case EmergeDirection.Up: emergeDir = Vector3.up; perpDir = Vector3.right; break;
+            case EmergeDirection.Down: emergeDir = Vector3.down; perpDir = Vector3.right; break;
+            case EmergeDirection.Left: emergeDir = Vector3.left; perpDir = Vector3.up; break;
+            case EmergeDirection.Right: emergeDir = Vector3.right; perpDir = Vector3.up; break;
         }
     }
     
@@ -151,94 +107,50 @@ public class ShadowArm : MonoBehaviour
         }
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
-    
-    private void ApplyWarningScale()
-    {
-        transform.localScale = new Vector3(1.5f, 0.3f, 1f);
-    }
 
     public void Retract()
     {
         if (state == ArmState.Inactive || state == ArmState.Retracting) return;
         state = ArmState.Retracting;
-
-        // ANIMATION: Fire the retract trigger exactly once on transition
         if (anim != null) anim.SetTrigger("retract");
-    }
-
-    public void EnableCorruption(bool enable)
-    {
     }
 
     private void UpdateWarning()
     {
         warningTimer -= Time.deltaTime;
-        
-        float pulse = Mathf.Abs(Mathf.Sin(Time.time * 10f));
-        
         if (spriteRenderer != null)
         {
             Color c = warningColor;
-            c.a = Mathf.Lerp(0.2f, 0.7f, pulse);
+            c.a = Mathf.Lerp(0.2f, 0.7f, Mathf.Abs(Mathf.Sin(Time.time * 10f)));
             spriteRenderer.color = c;
         }
-        
-        float scaleX = 1.5f + Mathf.Sin(Time.time * 8f) * 0.2f;
-        transform.localScale = new Vector3(scaleX, 0.3f, 1f);
+        transform.localScale = new Vector3(1.5f + Mathf.Sin(Time.time * 8f) * 0.2f, 0.3f, 1f);
         
         if (warningTimer <= 0f)
         {
             riseProgress = 0f;
             state = ArmState.Rising;
-            
-            // ANIMATION: Fire the rise trigger exactly once on transition
             if (anim != null) anim.SetTrigger("rise"); 
-            
-            if (spriteRenderer != null)
-                spriteRenderer.color = armColor;
-                
+            if (spriteRenderer != null) spriteRenderer.color = armColor;
             transform.localScale = new Vector3(0.5f, 0.1f, 1f);
         }
     }
 
     private void UpdateRising()
     {
-        riseProgress += Time.deltaTime * riseSpeed / riseHeight;
-        riseProgress = Mathf.Clamp01(riseProgress);
-        
+        riseProgress = Mathf.Clamp01(riseProgress + Time.deltaTime * riseSpeed / riseHeight);
         transform.position = Vector3.Lerp(startPosition, targetPosition, riseProgress);
-        
-        float scaleY = Mathf.Lerp(0.1f, 3f, riseProgress);
         transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-        
-        if (riseProgress >= 1f)
-        {
-            state = ArmState.Active;
-            
-            // ANIMATION: Fire the active trigger exactly once on transition
-            if (anim != null) anim.SetTrigger("active");
-        }
+        if (riseProgress >= 1f) { state = ArmState.Active; if (anim != null) anim.SetTrigger("active"); }
     }
 
-    private void UpdateActive()
-    {
-        float sway = Mathf.Sin(Time.time * 3f + transform.position.x + transform.position.y) * 0.05f;
-        transform.position = targetPosition + perpDir * sway;
-    }
+    private void UpdateActive() => transform.position = targetPosition + perpDir * Mathf.Sin(Time.time * 3f + transform.position.x + transform.position.y) * 0.05f;
 
     private void UpdateRetracting()
     {
-        transform.position = Vector3.MoveTowards(
-            transform.position, 
-            startPosition, 
-            retractSpeed * Time.deltaTime
-        );
-        
-        float dist = Vector3.Distance(transform.position, startPosition);
-        float scaleY = Mathf.Lerp(0.1f, 3f, dist / riseHeight);
+        transform.position = Vector3.MoveTowards(transform.position, startPosition, retractSpeed * Time.deltaTime);
         transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-        
-        if (dist < 0.1f)
+        if (Vector3.Distance(transform.position, startPosition) < 0.1f)
         {
             state = ArmState.Inactive;
             isActive = false;
@@ -249,39 +161,21 @@ public class ShadowArm : MonoBehaviour
 
     private void TryDamagePlayer(Collider2D other)
     {
-        if (state != ArmState.Active && state != ArmState.Rising) return;
-        if (Time.time - lastDamageTime < damageCooldown) return;
-
-        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-        if (playerHealth == null)
-            playerHealth = other.GetComponentInParent<PlayerHealth>();
-            
+        if ((state != ArmState.Active && state != ArmState.Rising) || Time.time - lastDamageTime < damageCooldown) return;
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>() ?? other.GetComponentInParent<PlayerHealth>();
         if (playerHealth != null)
         {
             playerHealth.TakeDamage(damage);
             lastDamageTime = Time.time;
-            
-            Rigidbody2D playerRb = other.GetComponent<Rigidbody2D>();
-            if (playerRb == null)
-                playerRb = playerRb = other.GetComponentInParent<Rigidbody2D>();
-                
+            Rigidbody2D playerRb = other.GetComponent<Rigidbody2D>() ?? other.GetComponentInParent<Rigidbody2D>();
             if (playerRb != null)
             {
                 Vector2 knockbackDir = (other.transform.position - transform.position).normalized;
                 knockbackDir.y = Mathf.Max(0.3f, knockbackDir.y);
-                knockbackDir.Normalize();
-                playerRb.AddForce(knockbackDir * knockbackForce, ForceMode2D.Impulse);
+                playerRb.AddForce(knockbackDir.normalized * knockbackForce, ForceMode2D.Impulse);
             }
         }
     }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        TryDamagePlayer(other);
-    }
-
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        TryDamagePlayer(other);
-    }
+    private void OnTriggerEnter2D(Collider2D other) => TryDamagePlayer(other);
+    private void OnTriggerStay2D(Collider2D other) => TryDamagePlayer(other);
 }
