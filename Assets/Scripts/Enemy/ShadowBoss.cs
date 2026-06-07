@@ -31,9 +31,11 @@ public class ShadowBoss : MonoBehaviour
     [Header("=== Audio ===")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip hurtSound;
+    [SerializeField] private AudioClip[] hitSounds;
     [SerializeField] private AudioClip phaseTransitionSound;
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private AudioClip valveSound;
+    [SerializeField] private AudioClip tableSlamSound;
 
     public enum BossState { Idle, Hurt, TurningToValve, SpinningValve, TurningBack, Invincible, Defeated }
     public enum BossPhase { Phase1, Phase2, Phase3 }
@@ -48,14 +50,6 @@ public class ShadowBoss : MonoBehaviour
     private Vector3 basePosition;
     private Vector3 baseScale;
     private bool isDefeated = false;
-
-    //private static readonly int AnimPhase = Animator.StringToHash("Phase");
-    //private static readonly int AnimIsHurt = Animator.StringToHash("IsHurt");
-    //private static readonly int AnimIsInvincible = Animator.StringToHash("IsInvincible");
-    //private static readonly int AnimTurnToValve = Animator.StringToHash("TurnToValve");
-    //private static readonly int AnimSpinValve = Animator.StringToHash("SpinValve");
-    //private static readonly int AnimTurnBack = Animator.StringToHash("TurnBack");
-     //static readonly int AnimDefeated = Animator.StringToHash("Defeated");
 
     public System.Action<int> OnHealthChanged;
     public System.Action<BossPhase> OnPhaseChanged;
@@ -142,8 +136,8 @@ public class ShadowBoss : MonoBehaviour
         
         if (animator != null)
         {
-            animator.SetBool("AnimIsInvincible", false); //eilaf
-            animator.SetInteger("AnimPhase", 1); //eilaf important
+            animator.SetBool("AnimIsInvincible", false); 
+            animator.SetInteger("AnimPhase", 1); 
         }
         
         transform.localScale = baseScale;
@@ -218,15 +212,15 @@ public class ShadowBoss : MonoBehaviour
     private IEnumerator HurtSequence()
     {
         currentState = BossState.Hurt;
-        
         StartCoroutine(FlashSprite());
         
         if (animator != null)
         {
-            animator.SetTrigger("Hurt"); //eilaf
+            animator.SetTrigger("Hurt");
         }
         
-        PlaySound(hurtSound);
+        // Play all hit sounds
+        PlaySound(hitSounds); 
         
         if (CameraFollow.Instance != null)
         {
@@ -234,44 +228,51 @@ public class ShadowBoss : MonoBehaviour
         }
         
         yield return new WaitForSeconds(0.3f);
-        
         UpdatePhase();
-        
         StartCoroutine(ValveSequence());
     }
 
     private IEnumerator ValveSequence()
     {
+        // 1. Boss Turns around
         currentState = BossState.TurningToValve;
-        
         if (animator != null)
         {
-            animator.SetTrigger("AnimTurnToValve"); //eilaf
+            animator.SetTrigger("AnimTurnToValve"); 
         }
-        
         yield return new WaitForSeconds(0.5f);
         
+        // 2. Boss Smashes Table
         currentState = BossState.SpinningValve;
-        
         if (animator != null)
         {
-            animator.SetTrigger("AnimSpinValve"); //eilaf 
+            animator.SetTrigger("AnimSpinValve"); 
         }
         
-        PlaySound(valveSound);
+        // --- DELAYED AUDIO EXECUTION ---
+        // Play table slam after some seconds
+        StartCoroutine(PlayDelayedSound(tableSlamSound, 0.1f));
+        // Play valve sound after some seconds
+        StartCoroutine(PlayDelayedSound(valveSound, 1.9f));
         
         yield return new WaitForSeconds(1f);
         
+        // 3. Boss Turns Back to face Player
         currentState = BossState.TurningBack;
-        
         if (animator != null)
         {
-            animator.SetTrigger("AnimTurnBack"); //eilaf
+            animator.SetTrigger("AnimTurnBack"); 
         }
-        
         yield return new WaitForSeconds(0.5f);
         
         EnterInvincibility();
+    }
+
+    // Added this helper method at the end of the script
+    private IEnumerator PlayDelayedSound(AudioClip clip, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        PlaySound(clip);
     }
 
     private void EnterInvincibility()
@@ -286,7 +287,7 @@ public class ShadowBoss : MonoBehaviour
             arena.OnBossInvincibilityStart();
         
         if (animator != null)
-            animator.SetBool("AnimIsInvincible", true); //eilaf
+            animator.SetBool("AnimIsInvincible", true); 
     }
 
     private void UpdateInvincibility()
@@ -304,21 +305,13 @@ public class ShadowBoss : MonoBehaviour
         currentState = BossState.Idle;
         
         if (barrier != null)
-        {
             barrier.Deactivate();
-        }
         
         if (arena != null)
-        {
             arena.OnBossInvincibilityEnd();
-        }
         
         if (animator != null)
-        {
-            animator.SetBool("AnimIsInvincible", false); //eilaf
-        }
-        
-
+            animator.SetBool("AnimIsInvincible", false); 
     }
 
     private void UpdatePhase()
@@ -347,10 +340,7 @@ public class ShadowBoss : MonoBehaviour
     private void TransitionToPhase(BossPhase newPhase)
     {
         currentPhase = newPhase;
-        
         int phaseNum = (int)currentPhase + 1;
-        
-
         
         if (arena != null)
         {
@@ -390,35 +380,27 @@ public class ShadowBoss : MonoBehaviour
 
     private IEnumerator DefeatSequence()
     {
-        animator.SetTrigger("Death"); //eilaf
+        animator.SetTrigger("Death"); 
         spriteRenderer.color = DeathColor;
 
         currentState = BossState.Defeated;
         isFightActive = false;
         isDefeated = true;
         
-        if (barrier != null)
-            barrier.Deactivate();
+        // Ensure other systems are cleaned up
+        if (barrier != null) barrier.Deactivate();
+        if (arena != null) arena.OnBossInvincibilityEnd();
         
-        if (arena != null)
-            arena.OnBossInvincibilityEnd();
-        
-        if (animator != null)
-            animator.SetTrigger("AnimDefeated");
+        // --- PLAY DEATH SOUND AND LAYERED HIT SOUNDS TOGETHER ---
         
         PlaySound(deathSound);
+        PlayLayeredSounds(hitSounds, 1.0f); // Plays everything in the array at once
         
         if (CameraFollow.Instance != null)
             CameraFollow.Instance.TriggerShake();
         
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.AddEnemyKillScore();
-            GameManager.Instance.AddScore(1000);
-        }
         
         yield return new WaitForSeconds(2f);
-        
         OnBossDefeated?.Invoke();
     }
 
@@ -445,11 +427,18 @@ public class ShadowBoss : MonoBehaviour
         }
     }
 
-    private void PlaySound(AudioClip clip)
+    // Centralized method to play one or more audio clips
+    private void PlaySound(params AudioClip[] clips)
     {
-        if (audioSource != null && clip != null)
+        if (audioSource == null) return;
+
+        foreach (AudioClip clip in clips)
         {
-            audioSource.PlayOneShot(clip);
+            if (clip != null)
+            {
+                // Using PlayOneShot allows multiple sounds to overlap without cutting each other off
+                audioSource.PlayOneShot(clip);
+            }
         }
     }
 
@@ -476,4 +465,27 @@ public class ShadowBoss : MonoBehaviour
             Gizmos.DrawWireSphere(valveTransform.position, 0.5f);
         }
     }
-}
+    
+
+    // New method to play multiple sounds layered together
+    private void PlayLayeredSounds(AudioClip[] clips, float volume)
+    {
+        foreach (AudioClip clip in clips)
+        {
+            if (clip != null)
+            {
+                GameObject tempAudio = new GameObject("TempBossAudio_" + clip.name);
+                tempAudio.transform.position = transform.position;
+
+                AudioSource tempSource = tempAudio.AddComponent<AudioSource>();
+                tempSource.clip = clip;
+                tempSource.volume = volume;
+                tempSource.spatialBlend = 0.0f; 
+                tempSource.Play();
+
+                Destroy(tempAudio, clip.length);
+            }
+        }
+    }
+
+} 

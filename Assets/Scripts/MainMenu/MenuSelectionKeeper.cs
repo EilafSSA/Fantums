@@ -7,9 +7,6 @@ public class MenuSelectionKeeper : MonoBehaviour
 
     private void Start()
     {
-        if (GetComponent<SelectionHighlighter>() == null)
-            gameObject.AddComponent<SelectionHighlighter>();
-
         Select(firstSelected);
     }
 

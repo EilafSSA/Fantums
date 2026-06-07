@@ -8,8 +8,11 @@ public class BossIntroCutscene : MonoBehaviour
     [Header("=== References ===")]
     [SerializeField] private Transform bossTransform;
     [SerializeField] private Animator bossAnimator;
-    [Tooltip("Animator trigger fired on the boss when the camera reaches hims.")]
+    [Tooltip("Animator trigger fired on the boss when the camera reaches him.")]
     [SerializeField] private string bossIntroTrigger = "IntroAnim";
+    
+    // Drag your PeopleSpawner GameObject here from the Hierarchy pane
+    [SerializeField] private GameObject peopleSpawnerGameObject; 
 
     [Header("=== Name Card ===")]
     [SerializeField] private string bossName = "Train Operator";
@@ -28,10 +31,13 @@ public class BossIntroCutscene : MonoBehaviour
     [SerializeField] private float barRetractTime = 0.3f;
 
     [Header("=== Visual ===")]
-    [Tooltip("Height of each cinematic bar as a f")]
+    [Tooltip("Height of each cinematic bar as a percentage.")]
     [SerializeField] private float barHeightPercent = 0.1f;
     [SerializeField] private Color barColor = Color.black;
     [SerializeField] private float cameraPanSmooth = 5f;
+
+    [Header("=== Boss Music Trigger Settings ===")]
+    [SerializeField] private AudioClip bossBattleTheme;
 
     private Canvas canvas;
     private RectTransform topBar;
@@ -40,6 +46,8 @@ public class BossIntroCutscene : MonoBehaviour
     private CanvasGroup nameGroup;
 
     private bool isPlaying;
+    private bool musicTriggered = false; 
+
     public Coroutine Play(Transform playerTransform)
     {
         if (isPlaying) return null;
@@ -49,6 +57,39 @@ public class BossIntroCutscene : MonoBehaviour
     private IEnumerator CutsceneRoutine(Transform playerTransform)
     {
         isPlaying = true;
+
+        // --- SAFE NUCLEAR AUDIO FIX (NO TAGS REQUIRED) ---
+        if (!musicTriggered)
+        {
+            musicTriggered = true;
+
+            // 1. Flip the permanent global kill-switch for all footstep audio
+            EnemyAudio.masterMute = true; 
+
+            // 2. COMPLETELY SHUT DOWN THE SPAWNER OBJECT
+            if (peopleSpawnerGameObject != null)
+            {
+                peopleSpawnerGameObject.SetActive(false);
+            }
+
+            // 3. HUNT EVERY ACTIVE ENEMY AUDIO SCRIPT AND ERASE THE OBJECT FROM THE MAP
+            EnemyAudio[] runningEnemies = FindObjectsByType<EnemyAudio>(FindObjectsSortMode.None);
+            foreach (EnemyAudio enemy in runningEnemies)
+            {
+                if (enemy != null)
+                {
+                    Destroy(enemy.gameObject); 
+                }
+            }
+
+            // 4. TRANSITION MUSIC
+            if (AudioManager.Instance != null && bossBattleTheme != null)
+            {
+                AudioManager.Instance.SwitchToBossMusic(bossBattleTheme, 0.5f, 1.0f);
+            }
+        }
+        
+       
 
         Rigidbody2D playerRb = playerTransform != null ? playerTransform.GetComponent<Rigidbody2D>() : null;
         PlayerController pc = playerTransform != null ? playerTransform.GetComponent<PlayerController>() : null;

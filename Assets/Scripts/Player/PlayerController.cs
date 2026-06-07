@@ -33,6 +33,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashDuration = 0.15f;
     [SerializeField] private float dashCooldown = 0.8f;
 
+    [Header("=== Audio ===")]
+    [SerializeField] private AudioSource playerSource;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip dashSound;
+    [SerializeField] private AudioClip attackSound;
+    [SerializeField] private AudioClip clingSound;
+    
     [Header("=== Gamepad ===")]
     [SerializeField] private float gamepadStickDeadzone = 0.25f;
     [SerializeField] private float gamepadTriggerThreshold = 0.5f;
@@ -45,7 +52,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private InputActionReference sprintAction;
     [SerializeField] private InputActionReference clingAction;
 
-    private Animator anim; //addedbyEilaf
+    private float nextAttackSoundTime = 0f;
+    [SerializeField] private float attackSoundCooldown = 0.8f; 
+
+    private Animator anim; 
     private Rigidbody2D rb;
     private float moveInput;
     private bool isGrounded;
@@ -75,7 +85,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>(); //addedbyEilaf - moved here so it only runs once instead of every frame
+        anim = GetComponent<Animator>(); 
     }
 
     private void OnEnable()
@@ -93,7 +103,6 @@ public class PlayerController : MonoBehaviour
             reference.action.Enable();
     }
 
-    // pull a live action: prefer the assigned reference, fall back to InputManager so saved rebinds apply
     private InputAction Resolve(InputActionReference reference, System.Func<InputManager, InputAction> fromManager)
     {
         if (reference != null && reference.action != null)
@@ -121,7 +130,7 @@ public class PlayerController : MonoBehaviour
     private bool AttackHeld()
     {
         InputAction a = Resolve(attackAction, m => m.Attack);
-        return a != null && a.IsPressed();
+        return a != null && a.WasPressedThisFrame();
     }
 
     private bool DashHeld()
@@ -139,8 +148,6 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (isEndingCutscene) return;
-
-        // don't process input while dashing (we can remove this later if we want anim-cancel or diractiloanl dash idk but good to know)
         if (isDashing) return;
 
         moveInput = ReadMoveAxis();
@@ -149,8 +156,8 @@ public class PlayerController : MonoBehaviour
         bool jumpDown = jumpHeld && !prevJumpHeld;
         prevJumpHeld = jumpHeld;
 
-        bool attackHeld = AttackHeld();
-        bool attackDown = attackHeld && !prevAttackHeld;
+        bool attackHeld = AttackHeld(); 
+        bool attackDown = attackHeld;   
         prevAttackHeld = attackHeld;
 
         bool dashHeld = DashHeld();
@@ -174,7 +181,11 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("IsGrounded", true);
             anim.SetBool("IsClinging", false);
         }
-        else { anim.SetBool("IsGrounded", false); anim.SetBool("IsClinging", false); } //addedbyEilaf
+        else 
+        { 
+            anim.SetBool("IsGrounded", false); 
+            anim.SetBool("IsClinging", false); 
+        }
 
         Collider2D clingCollider = Physics2D.OverlapCircle(grabCheck.position, grabCheckRadius, clingLayer);
         bool clingContact = clingCollider != null;
@@ -183,6 +194,12 @@ public class PlayerController : MonoBehaviour
         {
             isClinging = true;
             currentClingTarget = clingCollider.transform;
+
+            if (playerSource != null && clingSound != null)
+            {
+                playerSource.PlayOneShot(clingSound);
+            }
+
             rb.linearVelocity = Vector2.zero;
             rb.gravityScale = 0f;
         }
@@ -205,22 +222,22 @@ public class PlayerController : MonoBehaviour
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                anim.SetTrigger("Jump"); //addedbyEilaf
+                anim.SetTrigger("Jump"); 
+                playerSource.PlayOneShot(jumpSound); 
             }
         }
 
-        if (isClinging) { anim.SetBool("IsClinging", true); } //addedbyEilaf
-        else { anim.SetBool("IsClinging", false); } //addedbyEilaf
+        if (isClinging) { anim.SetBool("IsClinging", true); } 
+        else { anim.SetBool("IsClinging", false); } 
 
-        // dash input
         dashCooldownTimer -= Time.deltaTime;
         if (dashDown && dashCooldownTimer <= 0f && !isClinging)
         {
             dashDirection = moveInput != 0f ? Mathf.Sign(moveInput) : (facingRight ? 1f : -1f);
             StartCoroutine(DashRoutine());
+            playerSource.PlayOneShot(dashSound); 
         }
 
-        // if the player stops clicking midcombo, this quietly resets the chain back to 0
         if (comboStep > 0)
         {
             comboResetTimer -= Time.deltaTime;
@@ -282,14 +299,14 @@ public class PlayerController : MonoBehaviour
         dashTimer = dashDuration;
         dashCooldownTimer = dashCooldown;
 
-        rb.gravityScale = 0f;           // kill gravity so the dash stays level
-        anim.SetTrigger("Dash");        // hook up a Dash trigger in Animator if you wanna make one!! :3
+        rb.gravityScale = 0f;          
+        anim.SetTrigger("Dash");        
 
         yield return new WaitForSeconds(dashDuration);
 
         isDashing = false;
         rb.gravityScale = 3f;
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x * 0.3f, rb.linearVelocity.y); // bleed off dash speed smoothly
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x * 0.3f, rb.linearVelocity.y); 
     }
 
     private void ReleaseCling()
@@ -302,17 +319,31 @@ public class PlayerController : MonoBehaviour
 
     private void Attack()
     {
-        // advance combo step bf4 firing the trigger so the animator sees the right int
+        // 1. AUDIO LOGIC 
+        if (Time.time >= nextAttackSoundTime && playerSource != null && attackSound != null)
+        {
+            playerSource.pitch = UnityEngine.Random.Range(0.85f, 1.15f);
+            playerSource.PlayOneShot(attackSound, 0.4f); 
+            
+            nextAttackSoundTime = Time.time + attackSoundCooldown;
+        }
+
+        // 2. COMBO SYSTEM LOGIC
         if (comboStep < maxComboStep)
+        {
             comboStep++;
+        }
         else
-            comboStep = 1; // loop back to the start of the combo once we finish all 3
+        {
+            comboStep = 1; 
+        }
 
         anim.SetInteger("ComboStep", comboStep);
-        anim.SetTrigger("Attack"); //addedbyEilaf
+        anim.SetTrigger("Attack"); 
 
         comboResetTimer = comboResetTime;
 
+        // 3. HIT DETECTION LOGIC (Regular Enemies & Shadow Boss)
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
 
         foreach (Collider2D hit in hits)
@@ -343,7 +374,7 @@ public class PlayerController : MonoBehaviour
             if (bossHitbox != null)
                 bossHitbox.TakeDamage(attackDamage);
         }
-        
+
         Collider2D[] allHits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange);
         foreach (Collider2D hit in allHits)
         {
@@ -362,7 +393,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
 
     public void ResetCombo()
     {

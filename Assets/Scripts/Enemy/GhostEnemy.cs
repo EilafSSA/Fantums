@@ -6,6 +6,9 @@ public class GhostEnemy : MonoBehaviour
 {
     [Header("=== References ===")]
     [SerializeField] private Transform player;
+    [SerializeField] private AudioSource enemySource;
+    [SerializeField] private AudioClip discoverySound;
+    private bool hasPlayedDiscovery = false;
 
     [Header("=== Movement ===")]
     [SerializeField] private float patrolSpeed = 1.5f;
@@ -90,14 +93,15 @@ public class GhostEnemy : MonoBehaviour
         if (canSee)
         {
             loseSightTimer = loseSightTime;
-            state = State.Chase;
-        }
-        else if (state == State.Chase)
-        {
-            loseSightTimer -= Time.fixedDeltaTime;
-            if (loseSightTimer <= 0f)
-                state = State.Patrol;
-        }
+        
+            
+            if (state != State.Chase) //this check to play the sound once when switching to chase
+            {
+            enemySource.PlayOneShot(discoverySound);
+            }
+
+        state = State.Chase;
+    }
 
         switch (state)
         {

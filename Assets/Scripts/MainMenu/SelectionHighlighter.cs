@@ -2,46 +2,59 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SelectionHighlighter : MonoBehaviour
+public class SelectionHighlighter : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
     [SerializeField] private Color highlightColor = Color.yellow;
     [SerializeField] private float outlineThickness = 4f;
 
-    private GameObject current;
     private Outline currentOutline;
+    private static bool globalInitialBlock = true;
 
-    private void Update()
+    private void Awake()
     {
-        EventSystem es = EventSystem.current;
-        if (es == null) return;
+        // Reset the boot blocker when the scene first loads
+        globalInitialBlock = true;
+        Invoke(nameof(ReleaseInitialBlock), 0.1f);
+    }
 
-        GameObject selected = es.currentSelectedGameObject;
-        if (selected == current) return;
+    private void ReleaseInitialBlock()
+    {
+        globalInitialBlock = false;
+    }
 
-        ClearOutline();
+    // Unity Event System automatically executes this EXACTLY ONCE when this specific object is highlighted
+    public void OnSelect(BaseEventData eventData)
+    {
+        // 1. Trigger the Hover sound safely (blocking the first frame boot noise)
+        if (!globalInitialBlock && UIAudioManager.Instance != null)
+        {
+            UIAudioManager.Instance.PlayHover();
+        }
 
-        current = selected;
-        if (current == null) return;
-
-        currentOutline = current.GetComponent<Outline>();
+        // 2. Visual Outline generation
+        currentOutline = GetComponent<Outline>();
         if (currentOutline == null)
-            currentOutline = current.AddComponent<Outline>();
+            currentOutline = gameObject.AddComponent<Outline>();
 
         currentOutline.effectColor = highlightColor;
         currentOutline.effectDistance = new Vector2(outlineThickness, outlineThickness);
         currentOutline.enabled = true;
     }
 
+    // Unity Event System automatically executes this EXACTLY ONCE when selection moves away
+    public void OnDeselect(BaseEventData eventData)
+    {
+        ClearOutline();
+    }
+
     private void ClearOutline()
     {
         if (currentOutline != null)
             currentOutline.enabled = false;
-        currentOutline = null;
     }
 
     private void OnDisable()
     {
         ClearOutline();
-        current = null;
     }
 }
