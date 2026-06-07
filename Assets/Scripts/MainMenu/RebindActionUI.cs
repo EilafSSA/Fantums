@@ -128,7 +128,9 @@ public class RebindActionUI : MonoBehaviour
         rebindOperation = action.PerformInteractiveRebinding(bindingIndex)
             .WithControlsExcluding("<Mouse>/position")
             .WithControlsExcluding("<Mouse>/delta")
+            .WithControlsExcluding("<Gamepad>/start")
             .WithCancelingThrough("<Keyboard>/escape")
+            .WithCancelingThrough("<Gamepad>/select")
             .OnComplete(op => OnRebindFinished())
             .OnCancel(op => OnRebindFinished());
 
