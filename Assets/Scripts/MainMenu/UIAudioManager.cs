@@ -6,6 +6,10 @@ public class UIAudioManager : MonoBehaviour
 {
     public static UIAudioManager Instance { get; private set; }
 
+    [Header("=== Sources ===")]
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource sfxSource;
+
     [Header("=== UI Sound Clips ===")]
     [SerializeField] private AudioClip clickSound;
     [SerializeField] private AudioClip hoverSound;
@@ -14,9 +18,6 @@ public class UIAudioManager : MonoBehaviour
     [Header("=== Main Menu Music ===")]
     [SerializeField] private AudioClip mainMenuMusicTrack;
     [SerializeField, Range(0f, 1f)] private float musicVolume = 0.6f;
-
-    private AudioSource sfxSource;
-    private AudioSource musicSource;
 
     private void Awake()
     {

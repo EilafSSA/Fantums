@@ -1,12 +1,16 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.Audio;
 
 public class MainMenu : MonoBehaviour
 {
+
     [Header("=== Options ===")]
     [SerializeField] private OptionsMenu optionsMenu;
     [SerializeField] private GameObject creditsPanel; // Drag your Credits panel here if it's a GameObject
+
+    public AudioMixer audioMixer;
 
     private float lastPlayedVolume = -1f;
 
@@ -94,9 +98,12 @@ public class MainMenu : MonoBehaviour
 
         if (creditsPanel != null) creditsPanel.SetActive(false);
     }
-
+    //here
     public void SetVolume(float volume)
     {
+        audioMixer.SetFloat("MasterAudio", volume);
+        audioMixer.SetFloat("MusicAudio", volume);
+        audioMixer.SetFloat("SFXAudio", volume);
         if (Mathf.Abs(volume - lastPlayedVolume) >= 0.15f)
         {
             if (UIAudioManager.Instance != null)
