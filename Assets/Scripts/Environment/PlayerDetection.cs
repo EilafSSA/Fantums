@@ -34,13 +34,17 @@ public class PlayerDetection : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning($"PlayerDetection on {gameObject.name}: Gate Sound clip is missing in the Inspector!");
+                    //Debug.LogWarning($"PlayerDetection on {gameObject.name}: Gate Sound clip is missing in the Inspector!");
                 }
             }
             else
             {
-                Debug.LogError("PlayerDetection: Could not find a live AudioManager Instance!");
+                //Debug.LogError("PlayerDetection: Could not find a live AudioManager Instance!");
             }
         }
     }
+
+    
+        
+    
 }

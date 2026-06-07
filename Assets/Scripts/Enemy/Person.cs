@@ -10,7 +10,6 @@ public class EnemyAudio : MonoBehaviour
     [SerializeField] private AudioClip runLoopClip; 
 
     [Header("=== Footstep Settings ===")]
-    [SerializeField, Range(0f, 1f)] private float stepVolume = 0.4f; 
     [SerializeField] private float stepRate = 0.3f; 
     [SerializeField] private float minPitch = 0.85f; 
     [SerializeField] private float maxPitch = 1.15f; 
@@ -23,7 +22,19 @@ public class EnemyAudio : MonoBehaviour
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        // REMOVED: masterMute = false; <-- This was resetting the mute for everyone!
+
+        // --- FIXED MIXER ROUTING ---
+        // If our central UI manager exists, we steal its mixer group assignment 
+        // and force this enemy's local AudioSource to pipe through the exact same channel.
+        if (audioSource != null && UIAudioManager.Instance != null)
+        {
+            // Grabs the Audio Mixer Group assigned to your manager's SFX source
+            AudioSource managerSFX = UIAudioManager.Instance.GetComponent<AudioSource>();
+            if (managerSFX != null)
+            {
+                audioSource.outputAudioMixerGroup = managerSFX.outputAudioMixerGroup;
+            }
+        }
     }
 
     private void OnEnable()
@@ -56,7 +67,10 @@ public class EnemyAudio : MonoBehaviour
             if (audioSource == null) yield break;
             
             audioSource.pitch = Random.Range(minPitch, maxPitch);
-            audioSource.PlayOneShot(runLoopClip, stepVolume);
+            
+            // We use the standard PlayOneShot without a hardcoded volume limit multiplier
+            // because the Audio Mixer Group handle balances the amplitude now.
+            audioSource.PlayOneShot(runLoopClip);
             yield return new WaitForSeconds(stepRate);
         }
     }

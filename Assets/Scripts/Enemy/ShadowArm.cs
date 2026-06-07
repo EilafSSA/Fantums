@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))] // Guarantees a local AudioSource component is attached
 public class ShadowArm : MonoBehaviour
 {
     public enum EmergeDirection { Up, Down, Left, Right }
@@ -21,10 +22,15 @@ public class ShadowArm : MonoBehaviour
     [Header("=== Visual ===")]
     [SerializeField] private Color armColor = new Color(0.3f, 0f, 0.5f, 1f);
 
+    [Header("=== Audio Sequence ===")]
+    [SerializeField] private AudioClip warningTickClip; // Assign your warning/telegraph sound here
+    [SerializeField] private AudioClip riseWhooshClip;  // Assign your sudden upward burst/impact sound here
+
     private enum ArmState { Warning, Rising, Active, Retracting, Inactive }
     private ArmState state = ArmState.Inactive;
     
     private Animator anim;
+    private AudioSource localAudioSource; // Internal reference to the hardware source
     private Vector3 startPosition;
     private Vector3 targetPosition;
     private Vector3 emergeDir;
@@ -43,6 +49,12 @@ public class ShadowArm : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        localAudioSource = GetComponent<AudioSource>();
+
+        if (localAudioSource != null)
+        {
+            localAudioSource.playOnAwake = false;
+        }
     }
 
     private void Update()
@@ -74,8 +86,12 @@ public class ShadowArm : MonoBehaviour
         
         if (anim != null) anim.SetTrigger("warn");
         
-        // This line communicates with your new AudioManager script
-        AudioManager.Instance.PlayArmWarningSounds(transform.position);
+        // --- SELF-CONTAINED AUDIO SEQUENCE STEP 1: WARNING TICK ---
+        // Play directly via the local AudioSource component to bypass global managers
+        if (warningTickClip != null && localAudioSource != null)
+        {
+            localAudioSource.PlayOneShot(warningTickClip);
+        }
         
         if (spriteRenderer != null)
         {
@@ -133,6 +149,12 @@ public class ShadowArm : MonoBehaviour
             if (anim != null) anim.SetTrigger("rise"); 
             if (spriteRenderer != null) spriteRenderer.color = armColor;
             transform.localScale = new Vector3(0.5f, 0.1f, 1f);
+
+            // --- SELF-CONTAINED AUDIO SEQUENCE STEP 2: RISE BURST ---
+            if (riseWhooshClip != null && localAudioSource != null)
+            {
+                localAudioSource.PlayOneShot(riseWhooshClip);
+            }
         }
     }
 

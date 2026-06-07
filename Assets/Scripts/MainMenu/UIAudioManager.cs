@@ -27,7 +27,6 @@ public class UIAudioManager : MonoBehaviour
         sfxSource.spatialBlend = 0f;
         sfxSource.playOnAwake = false;
 
-        // Automatically configure a secondary audio source purely for the music track
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.spatialBlend = 0f;
         musicSource.loop = true;
@@ -36,7 +35,6 @@ public class UIAudioManager : MonoBehaviour
 
     private void Start()
     {
-        // Fire up the main menu theme immediately on scene launch
         PlayMenuMusic();
     }
 
@@ -50,7 +48,6 @@ public class UIAudioManager : MonoBehaviour
         }
     }
 
-    // Direct command called by MainMenu when launching into Level 1
     public void FadeOutMenuMusic(float duration)
     {
         if (gameObject.activeInHierarchy)
@@ -76,21 +73,41 @@ public class UIAudioManager : MonoBehaviour
         musicSource.Stop();
     }
 
-    public void PlayClick()
+    // --- 2D MIXER ROUTED METHOD ---
+    public void PlayOneShotSFX(AudioClip clip)
     {
-        if (clickSound != null && sfxSource != null)
-            sfxSource.PlayOneShot(clickSound);
+        if (clip != null && sfxSource != null)
+        {
+            sfxSource.PlayOneShot(clip);
+        }
     }
 
-    public void PlayHover()
+    // --- 3D SPATIAL MIXER ROUTED METHOD (FIXES YOUR COMPILER ERROR) ---
+    public void PlaySpatialSFX(AudioClip clip, Vector3 position, float spatialBlend = 1f)
     {
-        if (hoverSound != null && sfxSource != null)
-            sfxSource.PlayOneShot(hoverSound);
+        if (clip == null) return;
+
+        GameObject tempAudioObj = new GameObject("TempSpatialAudio");
+        tempAudioObj.transform.position = position;
+
+        AudioSource source = tempAudioObj.AddComponent<AudioSource>();
+        source.clip = clip;
+        source.spatialBlend = spatialBlend; 
+        source.minDistance = 2f;
+        source.maxDistance = 15f;
+        source.rolloffMode = AudioRolloffMode.Logarithmic;
+
+        if (sfxSource != null)
+        {
+            source.outputAudioMixerGroup = sfxSource.outputAudioMixerGroup;
+        }
+
+        source.Play();
+        Destroy(tempAudioObj, clip.length);
     }
 
-    public void PlayCancel()
-    {
-        if (backOrCancelSound != null && sfxSource != null)
-            sfxSource.PlayOneShot(backOrCancelSound);
-    }
+    // Old UI methods kept for safety/compatibility
+    public void PlayClick() { if (clickSound != null && sfxSource != null) sfxSource.PlayOneShot(clickSound); }
+    public void PlayHover() { if (hoverSound != null && sfxSource != null) sfxSource.PlayOneShot(hoverSound); }
+    public void PlayCancel() { if (backOrCancelSound != null && sfxSource != null) sfxSource.PlayOneShot(backOrCancelSound); }
 }

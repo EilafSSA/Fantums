@@ -1,2 +1,13 @@
 fileFormatVersion: 2
 guid: 8318932f09f448646970faa8de8110b3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - warningTickClip: {instanceID: 0}
+  - riseWhooshClip: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

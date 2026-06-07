@@ -2,6 +2,7 @@ using UnityEngine;
 
 // Wall-mounted enemy. Remains static. Detects the player within range and launches projectile blobs toward them.
 // Can be paired with an EnemyHealth component for destructibility, or left standalone to function as an immutable turret.
+[RequireComponent(typeof(AudioSource))] // Ensures an AudioSource component always exists on this object
 public class BlobSpewer : MonoBehaviour
 {
     [Header("=== Targeting ===")]
@@ -23,14 +24,21 @@ public class BlobSpewer : MonoBehaviour
     [Header("=== Audio ===")]
     [SerializeField] private AudioClip detectionSound;
     [SerializeField] private AudioClip fireSound;
-    [Range(0f, 1f)] [SerializeField] private float fireVolume = 1f;
 
+    private AudioSource localAudioSource; // Added to store local sound device
     private float fireTimer;
     private bool playerIsDetected = false; // Internal tracking state to prevent detection sound spamming
 
     private void Start()
     {
         fireTimer = firstShotDelay;
+
+        // Grab the local AudioSource attached right next to this script
+        localAudioSource = GetComponent<AudioSource>();
+        if (localAudioSource != null)
+        {
+            localAudioSource.playOnAwake = false;
+        }
 
         if (anim == null) 
             anim = GetComponent<Animator>(); 
@@ -101,18 +109,12 @@ public class BlobSpewer : MonoBehaviour
 
     private void TriggerAudioPlayback(AudioClip clipToPlay)
     {
-        if (clipToPlay != null)
+        // --- BYPASS GLOBAL MANAGER (SELF-CONTAINED AUDIO) ---
+        // Instead of sending the clip to an uninitialized global manager, 
+        // we channel it right through our own local source instantly at full volume.
+        if (clipToPlay != null && localAudioSource != null)
         {
-            GameObject temporaryAudioContainer = new GameObject("RuntimeAudio_" + clipToPlay.name);
-            temporaryAudioContainer.transform.position = transform.position;
-
-            AudioSource dynamicSource = temporaryAudioContainer.AddComponent<AudioSource>();
-            dynamicSource.clip = clipToPlay;
-            dynamicSource.volume = fireVolume;
-            dynamicSource.spatialBlend = 0.0f; // Constrains playback to 2D channel space for maximum consistency
-            dynamicSource.Play();
-
-            Destroy(temporaryAudioContainer, clipToPlay.length);
+            localAudioSource.PlayOneShot(clipToPlay);
         }
     }
 

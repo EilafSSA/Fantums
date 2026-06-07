@@ -4,26 +4,22 @@ using UnityEngine;
 public class FinalBossMainBody : MonoBehaviour
 {
     private Animator anim; 
-    private AudioSource audioSource;
-
-    [Header("=== Boss Sound Settings ===")]
-    [SerializeField, Range(0f, 1f)] private float bossSFXVolume = 0.6f;
+    private AudioSource localAudioSource; // Found automatically at runtime
 
     [Header("=== Sound Clips ===")]
-    [Tooltip("Add exactly 2 different hurt clips here")]
+    [Tooltip("Both clips in this array will be played simultaneously")]
     [SerializeField] private AudioClip[] hurtClips = new AudioClip[2]; 
     [SerializeField] private AudioClip deathClip;
 
     private void Awake()
     { 
         anim = GetComponent<Animator>(); 
-        audioSource = GetComponent<AudioSource>();
+        localAudioSource = GetComponent<AudioSource>();
 
-        //  Ensure the AudioSource is set up for SFX and not music
-        if (audioSource != null)
+        // Fail-safe initialization to match your level 1 settings
+        if (localAudioSource != null)
         {
-            audioSource.playOnAwake = false;
-            audioSource.spatialBlend = 0f; // 2D Full Screen Volume
+            localAudioSource.playOnAwake = false;
         }
     }
 
@@ -34,7 +30,7 @@ public class FinalBossMainBody : MonoBehaviour
             anim.SetTrigger("Hurt");
         }
 
-        PlayRandomHurtSound();
+        PlayAllHurtSounds();
     }
 
     public void bodyDeath()
@@ -44,27 +40,27 @@ public class FinalBossMainBody : MonoBehaviour
             anim.SetTrigger("Death");
         }
 
-        // 1. Play a hurt sound variations during death crunch
-        PlayRandomHurtSound();
+        // 1. Play both hurt sounds layered together
+        PlayAllHurtSounds();
 
-        // 2. Overlay the unique explosive/death sound on top immediately
-        if (deathClip != null && audioSource != null)
+        // 2. Overlay the unique death track immediately
+        if (deathClip != null && localAudioSource != null)
         {
-            audioSource.PlayOneShot(deathClip, bossSFXVolume);
+            localAudioSource.PlayOneShot(deathClip);
         }
     }
 
-    private void PlayRandomHurtSound()
+    private void PlayAllHurtSounds()
     {
-        if (audioSource == null || hurtClips == null || hurtClips.Length == 0) return;
+        if (hurtClips == null || hurtClips.Length == 0 || localAudioSource == null) return;
 
-        // Pick randomly between the clips added to the inspector array
-        int randomIndex = Random.Range(0, hurtClips.Length);
-        AudioClip selectedClip = hurtClips[randomIndex];
-
-        if (selectedClip != null)
+        // Loop through and fire every clip inside the inspector array simultaneously via the local source
+        foreach (AudioClip clip in hurtClips)
         {
-            audioSource.PlayOneShot(selectedClip, bossSFXVolume);
+            if (clip != null)
+            {
+                localAudioSource.PlayOneShot(clip);
+            }
         }
     }
 }

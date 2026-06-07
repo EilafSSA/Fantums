@@ -4,7 +4,6 @@ public class EnemyHealth : MonoBehaviour
 {
     [Header("=== Audio ===")]
     [SerializeField] private AudioClip soundEffect; // deathSound
-    [Range(0f, 1f)] [SerializeField] private float deathVolume = 1f; // Quick slider to adjust volume right from the inspector!
     
     [Header("=== Health Settings ===")]
     [SerializeField] private int maxHealth = 3;
@@ -52,22 +51,13 @@ public class EnemyHealth : MonoBehaviour
     {
         Debug.Log("Enemy Died!");
 
-        // This creates a custom audio object that plays the sound cleanly, 
-        // scales the volume exactly to your slider, and survives the enemy being destroyed.
-        if (soundEffect != null)
+        // --- FIXED MIXER ROUTING (SPATIAL 3D) ---
+        // We cut the manual instantiation block entirely.
+        // Handing the clip off to the manager guarantees it survives this object's destruction
+        // and instantly respects your central options menu volume settings.
+        if (soundEffect != null && UIAudioManager.Instance != null)
         {
-            GameObject tempAudioObj = new GameObject("TempDeathAudio");
-            tempAudioObj.transform.position = transform.position;
-
-            AudioSource source = tempAudioObj.AddComponent<AudioSource>();
-            source.clip = soundEffect;
-            source.volume = deathVolume;    // Assigned directly from the inspector slider
-            source.spatialBlend = 0.0f;     // 0 = Pure 2D (loud everywhere), 1 = Strict 3D spatial sound. Change as desired.
-            
-            source.Play();
-
-            // Safely disposes of the temporary audio object only after the sound finishes playing
-            Destroy(tempAudioObj, soundEffect.length);
+            UIAudioManager.Instance.PlaySpatialSFX(soundEffect, transform.position);
         }
 
         // Award score on kill

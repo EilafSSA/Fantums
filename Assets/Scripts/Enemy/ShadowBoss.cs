@@ -467,23 +467,16 @@ public class ShadowBoss : MonoBehaviour
     }
     
 
-    // New method to play multiple sounds layered together
+    
+    // New method to play multiple sounds layered together cleanly through the mixer
     private void PlayLayeredSounds(AudioClip[] clips, float volume)
     {
         foreach (AudioClip clip in clips)
         {
-            if (clip != null)
+            if (clip != null && UIAudioManager.Instance != null)
             {
-                GameObject tempAudio = new GameObject("TempBossAudio_" + clip.name);
-                tempAudio.transform.position = transform.position;
-
-                AudioSource tempSource = tempAudio.AddComponent<AudioSource>();
-                tempSource.clip = clip;
-                tempSource.volume = volume;
-                tempSource.spatialBlend = 0.0f; 
-                tempSource.Play();
-
-                Destroy(tempAudio, clip.length);
+                // Hand it over to your global manager to ensure it uses the proper mixer channel layout
+                UIAudioManager.Instance.PlaySpatialSFX(clip, transform.position);
             }
         }
     }

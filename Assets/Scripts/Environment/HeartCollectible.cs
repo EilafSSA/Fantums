@@ -9,12 +9,12 @@ public class HeartCollectible : MonoBehaviour
     [Header("=== Audio ===")]
     [SerializeField] private AudioClip collectSound; 
     
-    private Animator anim; //addedbyEilaf
+    private Animator anim; // addedbyEilaf
     private bool isCollected = false; // Added to prevent double-triggering sound or healing
 
     private void Awake()
     {
-        anim = GetComponent<Animator>(); //addedbyEilaf
+        anim = GetComponent<Animator>(); // addedbyEilaf
     }
 
     private void Update()
@@ -85,11 +85,11 @@ public class HeartCollectible : MonoBehaviour
             
             health.Heal(healAmount);
 
-            // AUDIO: Plays the sound in 3D space at the heart's position. 
-            // It persists perfectly even after the GameObject is destroyed!
-            if (collectSound != null)
+            // --- FIXED MIXER ROUTING ---
+            // Instead of spawning an unrouted clip in the wild, we play it through our Mixer-linked manager
+            if (collectSound != null && UIAudioManager.Instance != null)
             {
-                AudioSource.PlayClipAtPoint(collectSound, transform.position);
+                UIAudioManager.Instance.PlayOneShotSFX(collectSound);
             }
 
             if (anim != null)

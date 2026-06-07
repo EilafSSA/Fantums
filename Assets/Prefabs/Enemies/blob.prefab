@@ -297,3 +297,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   popSound: {fileID: 8300000, guid: 2b24296e4861e314f9c4f6d045fe46a6, type: 3}
+  sfxMixerGroup: {fileID: -1173335532276165091, guid: 8d1849ebd74bfd54298c8e268d64eabf, type: 2}

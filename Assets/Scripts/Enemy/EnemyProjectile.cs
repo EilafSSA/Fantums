@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio; // Required for AudioMixerGroup reference
 
 public class EnemyProjectile : MonoBehaviour
 {
@@ -17,7 +18,8 @@ public class EnemyProjectile : MonoBehaviour
 
     [Header("=== Audio ===")]
     [SerializeField] private AudioClip popSound;
-    [Range(0f, 1f)] [SerializeField] private float popVolume = 0.8f; // Easy volume tweak directly from Inspector
+    [Tooltip("FALLBACK MIXER: Drag your SFX Mixer Group here so volume sliders work when loading scenes directly.")]
+    [SerializeField] private AudioMixerGroup sfxMixerGroup;
 
     private Rigidbody2D rb;
     private Vector2 direction = Vector2.right;
@@ -78,6 +80,7 @@ public class EnemyProjectile : MonoBehaviour
         {
             hp.TakeDamage(damage);
 
+            // Access player's rigidbody for knockback
             Rigidbody2D pRB = other.GetComponent<Rigidbody2D>();
             if (pRB == null) pRB = other.GetComponentInParent<Rigidbody2D>();
 
@@ -106,19 +109,35 @@ public class EnemyProjectile : MonoBehaviour
 
     private void TriggerPopAudio()
     {
-        if (popSound != null)
+        if (popSound == null) return;
+
+        // --- SELF-CONTAINED PERSISTENT AUDIO SPATIAL SYSTEM ---
+        GameObject tempAudioAnchor = new GameObject("TempPopAudio_" + popSound.name);
+        tempAudioAnchor.transform.position = new Vector3(transform.position.x, transform.position.y, 0f);
+
+        AudioSource source = tempAudioAnchor.AddComponent<AudioSource>();
+        source.clip = popSound;
+        
+        source.spatialBlend = 0f; 
+        source.playOnAwake = false;
+
+        // --- MIXER ROUTING FALLBACK LOGIC ---
+        if (UIAudioManager.Instance != null)
         {
-            // Create independent temp sound object so 3D camera distance attenuation doesn't crush it
-            GameObject tempAudioObj = new GameObject("TempPopAudio");
-            tempAudioObj.transform.position = transform.position;
-
-            AudioSource source = tempAudioObj.AddComponent<AudioSource>();
-            source.clip = popSound;
-            source.volume = popVolume;
-            source.spatialBlend = 0.0f; // Force to 2D space so it sounds loud and direct everywhere
-            source.Play();
-
-            Destroy(tempAudioObj, popSound.length);
+            AudioSource managerSource = UIAudioManager.Instance.GetComponent<AudioSource>();
+            if (managerSource != null)
+            {
+                source.outputAudioMixerGroup = managerSource.outputAudioMixerGroup;
+            }
         }
+        else if (sfxMixerGroup != null)
+        {
+            // If the scene has no manager, fall back directly to the assigned asset reference
+            source.outputAudioMixerGroup = sfxMixerGroup;
+        }
+
+        source.Play();
+
+        Destroy(tempAudioAnchor, popSound.length);
     }
 }
