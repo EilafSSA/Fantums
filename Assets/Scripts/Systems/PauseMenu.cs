@@ -25,6 +25,7 @@ public class PauseMenu : MonoBehaviour
 
     private Button resumeButton;
     private Button optionsBackButton;
+    private Button optionsFirstButton;
 
     private void Update()
     {
@@ -96,8 +97,13 @@ public class PauseMenu : MonoBehaviour
         if (EventSystem.current == null) return;
 
         GameObject target = null;
-        if (optionsPanel != null && optionsPanel.activeInHierarchy && optionsBackButton != null)
-            target = optionsBackButton.gameObject;
+        if (optionsPanel != null && optionsPanel.activeInHierarchy)
+        {
+            if (optionsFirstButton != null)
+                target = optionsFirstButton.gameObject;
+            else if (optionsBackButton != null)
+                target = optionsBackButton.gameObject;
+        }
         else if (resumeButton != null)
             target = resumeButton.gameObject;
 
@@ -168,6 +174,8 @@ public class PauseMenu : MonoBehaviour
             if (rowBtn != null) rowButtons.Add(rowBtn);
         }
 
+        optionsFirstButton = rowButtons.Count > 0 ? rowButtons[0] : null;
+
         Button resetBtn = MakeButton(optionsPanel.transform, "Reset to Defaults", new Vector2(-160f, -320f));
         optionsBackButton = MakeButton(optionsPanel.transform, "Back", new Vector2(160f, -320f));
         resetBtn.onClick.AddListener(() =>
@@ -177,9 +185,26 @@ public class PauseMenu : MonoBehaviour
         });
         optionsBackButton.onClick.AddListener(BackToPause);
 
-        rowButtons.Add(resetBtn);
-        rowButtons.Add(optionsBackButton);
         LinkVertical(rowButtons.ToArray());
+
+        Button lastRowBtn = rowButtons.Count > 0 ? rowButtons[rowButtons.Count - 1] : null;
+
+        Navigation resetNav = new Navigation { mode = Navigation.Mode.Explicit };
+        resetNav.selectOnUp = lastRowBtn;
+        resetNav.selectOnRight = optionsBackButton;
+        resetBtn.navigation = resetNav;
+
+        Navigation backNav = new Navigation { mode = Navigation.Mode.Explicit };
+        backNav.selectOnUp = lastRowBtn;
+        backNav.selectOnLeft = resetBtn;
+        optionsBackButton.navigation = backNav;
+
+        if (lastRowBtn != null)
+        {
+            Navigation lastNav = lastRowBtn.navigation;
+            lastNav.selectOnDown = resetBtn;
+            lastRowBtn.navigation = lastNav;
+        }
 
         optionsPanel.SetActive(false);
         root.SetActive(false);

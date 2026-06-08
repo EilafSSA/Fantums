@@ -9,11 +9,15 @@ public class OptionsMenu : MonoBehaviour
     [Header("=== Rebind Rows ===")]
     [SerializeField] private RebindActionUI[] rebindRows;
 
+    private void OnEnable()
+    {
+        RefreshAllRows();
+    }
+
     public void OpenOptions()
     {
         if (optionsPanel != null) optionsPanel.SetActive(true);
         if (mainPanel != null) mainPanel.SetActive(false);
-        RefreshAllRows();
     }
 
     public void CloseOptions()

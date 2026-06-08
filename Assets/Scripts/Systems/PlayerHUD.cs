@@ -13,6 +13,8 @@ public class PlayerHUD : MonoBehaviour
 
     private void Update()
     {
+
+
         if (playerHealth != null && healthText != null)
         {
             healthText.text = $"HP: {playerHealth.GetCurrentHealth()} / {playerHealth.GetMaxHealth()}";
@@ -20,7 +22,7 @@ public class PlayerHUD : MonoBehaviour
 
         if (scoreText != null && GameManager.Instance != null)
         {
-            scoreText.text = $"SCORE: {GameManager.Instance.GetScore()}";
+            scoreText.text = $"{GameManager.Instance.GetScore()}";
         }
     }
 }
