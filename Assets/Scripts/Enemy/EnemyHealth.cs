@@ -51,13 +51,12 @@ public class EnemyHealth : MonoBehaviour
     {
         Debug.Log("Enemy Died!");
 
-        // --- FIXED MIXER ROUTING (SPATIAL 3D) ---
-        // We cut the manual instantiation block entirely.
-        // Handing the clip off to the manager guarantees it survives this object's destruction
-        // and instantly respects your central options menu volume settings.
-        if (soundEffect != null && UIAudioManager.Instance != null)
+        // --- FIXED MANAGER ROUTING ---
+        // Route the sound effect to AudioManager instead of UIAudioManager
+        if (soundEffect != null && AudioManager.Instance != null)
         {
-            UIAudioManager.Instance.PlaySpatialSFX(soundEffect, transform.position);
+            // PlayGateSound safely triggers the clip globally through your central audio channels
+            AudioManager.Instance.PlayGateSound(soundEffect, transform.position);
         }
 
         // Award score on kill

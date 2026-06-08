@@ -111,6 +111,9 @@ public class AudioManager : MonoBehaviour
 
     public void PlayVictoryMusic(float fadeOut = 0.5f, float fadeIn = 2.0f)
     {
+        // 1. Force looping OFF right here so the victory stinger only plays once!
+        if (musicSource != null) musicSource.loop = false;
+
         if (victoryClip != null) SwitchMusic(victoryClip, fadeOut, fadeIn);
     }
 
@@ -136,6 +139,19 @@ public class AudioManager : MonoBehaviour
                 yield return null;
             }
             musicSource.Stop();
+            
+            // 2. DYNAMIC LOOP CHECK: 
+            // If the clip about to play is the victory stinger, do NOT loop it.
+            // Otherwise, it's level background music or boss music, so it MUST loop.
+            if (newClip == victoryClip)
+            {
+                musicSource.loop = false;
+            }
+            else
+            {
+                musicSource.loop = true;
+            }
+
             musicSource.clip = newClip;
             musicSource.Play();
         }

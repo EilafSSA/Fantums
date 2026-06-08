@@ -85,11 +85,13 @@ public class HeartCollectible : MonoBehaviour
             
             health.Heal(healAmount);
 
-            // --- FIXED MIXER ROUTING ---
-            // Instead of spawning an unrouted clip in the wild, we play it through our Mixer-linked manager
-            if (collectSound != null && UIAudioManager.Instance != null)
+            
+            // --- FIXED MANAGER ROUTING ---
+            // Route the sound effect to AudioManager instead of UIAudioManager
+            if (collectSound != null && AudioManager.Instance != null)
             {
-                UIAudioManager.Instance.PlayOneShotSFX(collectSound);
+                // PlayGateSound bypasses 3D spacing and plays cleanly through your SFX/UI mixer channel
+                AudioManager.Instance.PlayGateSound(collectSound, transform.position);
             }
 
             if (anim != null)

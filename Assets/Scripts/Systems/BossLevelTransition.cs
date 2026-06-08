@@ -138,7 +138,7 @@ public class TransitionRunner : MonoBehaviour
 
     private AsyncOperation LoadNext(int bIdx, string sName)
     {
-        if (bIdx >= 0 && bIdx < SceneManager.sceneCountInBuildSettings) return SceneManager.LoadSceneAsync(bIdx);
+        // Force the game to load strictly by the Scene's clear text Name string
         if (!string.IsNullOrEmpty(sName)) return SceneManager.LoadSceneAsync(sName);
         return null;
     }

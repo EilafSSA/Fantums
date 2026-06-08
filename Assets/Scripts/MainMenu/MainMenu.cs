@@ -31,7 +31,7 @@ public class MainMenu : MonoBehaviour
         }
 
         yield return new WaitForSecondsRealtime(0.25f);
-        SceneManager.LoadSceneAsync("Intro");
+        SceneManager.LoadSceneAsync("level1");
     }
 
     // GENERIC CLICK: Use this for buttons that just open sub-menus (like your new START sub-menu)
