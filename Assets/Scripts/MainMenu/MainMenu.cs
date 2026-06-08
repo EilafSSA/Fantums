@@ -10,7 +10,6 @@ public class MainMenu : MonoBehaviour
 
     private float lastPlayedVolume = -1f;
 
-    // Call this when the final launch button is pressed to load the level
     public void PlayGame()
     {
         StartCoroutine(PlayGameRoutine());
@@ -28,7 +27,7 @@ public class MainMenu : MonoBehaviour
         }
 
         yield return new WaitForSecondsRealtime(0.25f);
-        SceneManager.LoadSceneAsync(1); // Level1
+        SceneManager.LoadSceneAsync("Intro");
     }
 
     // GENERIC CLICK: Use this for buttons that just open sub-menus (like your new START sub-menu)
