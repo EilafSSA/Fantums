@@ -126,7 +126,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 720
         width: 360
         height: 360
       alignment: 0
@@ -148,7 +148,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 360
-        y: 0
+        y: 720
         width: 360
         height: 360
       alignment: 0
@@ -170,7 +170,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 720
-        y: 0
+        y: 720
         width: 360
         height: 360
       alignment: 0
@@ -192,7 +192,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1080
-        y: 0
+        y: 720
         width: 360
         height: 360
       alignment: 0
@@ -205,6 +205,50 @@ TextureImporter:
       bones: []
       spriteID: 6ba31d8aeda91af20800000000000000
       internalID: 3432194672138730166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: peopleanimation-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 360
+        width: 360
+        height: 360
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9dc85b6b5cbd2f4eae464f339b2da7a
+      internalID: -100561571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: peopleanimation-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 360
+        width: 360
+        height: 360
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d963bafa5f57454fa7c066dfa14b65d
+      internalID: -492976251
       vertices: []
       indices: 
       edges: []
@@ -229,6 +273,8 @@ TextureImporter:
       peopleanimation-Sheet_1: -4506132086488225885
       peopleanimation-Sheet_2: -207452924105564219
       peopleanimation-Sheet_3: 3432194672138730166
+      peopleanimation-Sheet_4: -100561571
+      peopleanimation-Sheet_5: -492976251
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
